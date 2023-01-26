@@ -5,8 +5,6 @@ const cart = Router()
 cart.post("/",async(req,res) =>{
     const leer = await fs.readFile("./cart.json","utf-8")
     const pasarJSON = JSON.parse(leer)
-    console.log(pasarJSON)
-    console.log(pasarJSON.length)
     const newCarrito = {id: pasarJSON.length ==0?1:pasarJSON.length + 1,products:[]}
     const convertirS = JSON.stringify(newCarrito)
     await fs.appendFile("./cart.json",convertirS)
@@ -17,8 +15,8 @@ cart.get("/:cid",async(req,res) =>{
     const leer = await fs.readFile("./cart.json","utf-8")
     const pasarJSON = JSON.parse(leer)
     const buscarCart = pasarJSON.find((pro) => pro.id == cid )
-    if(buscarCart) return  res.status(404).send("No se el id del carrito")
-    return res.json({products:buscarCart.products })
+    if(!buscarCart) return  res.status(404).send("No se el id del carrito")
+    return res.render("home",{cart:buscarCart.products}) /* res.json({products:buscarCart.products }) */
 })
 cart.post("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
@@ -27,7 +25,6 @@ cart.post("/:cid/products/:pid",async(req,res) =>{
     const leerProducts = await instancia.getProductsById(pid)
     const buscarCart = pasarJSON.findIndex((pro) => pro.id == cid)
     const cart = pasarJSON.at(buscarCart)
-    console.log("b", cart)
     if(buscarCart == -1 || !leerProducts) return res.status(404).send("No se el id del carrito o del producto")
 
     const verProductID = cart.products.findIndex((pro) => pro.id ==pid )
