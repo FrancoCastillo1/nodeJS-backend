@@ -18,8 +18,7 @@ app.get("/",(req,res)=> res.send("hello"))
 const http = app.listen(8080, ()=> console.log('the server is running'));
 const io = new Server(http)
 io.on('connection', socket =>{
-    const id = socket.id
-    console.log("Nuevo cliente conectado",id)
+    console.log("Nuevo cliente conectado")
     socket.on("message",data =>{
         console.log(data)
     })
