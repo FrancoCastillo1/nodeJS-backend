@@ -1,26 +1,31 @@
 import { Router } from "express";
 import fs from "fs/promises"
-import instancia from "../ProductManager-Database/ProductManager.js";
+import instancia from "../dao/ProductManager.js";
+import __dirname from "../utilis.js";
+
 const cart = Router()
+
 cart.post("/",async(req,res) =>{
-    const leer = await fs.readFile("./cart.json","utf-8")
+    const leer = await fs.readFile(__dirname + "/cart.json","utf-8")
     const pasarJSON = JSON.parse(leer)
     const newCarrito = {id: pasarJSON.length ==0?1:pasarJSON.length + 1,products:[]}
     const convertirS = JSON.stringify(newCarrito)
     await fs.appendFile("./cart.json",convertirS)
     res.send("El carrito fue generado satisfactoreamente")
 })
+
 cart.get("/:cid",async(req,res) =>{
     const {cid} = req.params
-    const leer = await fs.readFile("./cart.json","utf-8")
+    const leer = await fs.readFile(__dirname + "/cart.json","utf-8")
     const pasarJSON = JSON.parse(leer)
     const buscarCart = pasarJSON.find((pro) => pro.id == cid )
     if(!buscarCart) return  res.status(404).send("No se el id del carrito")
-    return res.render("home",{cart:buscarCart.products}) /* res.json({products:buscarCart.products }) */
+    return res.json({cart:buscarCart.products})
 })
+
 cart.post("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
-    const leer = await fs.readFile("./cart.json","utf-8")
+    const leer = await fs.readFile(__dirname + "/cart.json","utf-8")
     const pasarJSON = JSON.parse(leer)
     const leerProducts = await instancia.getProductsById(pid)
     const buscarCart = pasarJSON.findIndex((pro) => pro.id == cid)
@@ -34,5 +39,7 @@ cart.post("/:cid/products/:pid",async(req,res) =>{
     pasarJSON.splice(buscarCart,1,cart)
     const convertirJSON = JSON.stringify(pasarJSON)
     await fs.writeFile("./cart.json",convertirJSON)
+
 })
+
 export default cart

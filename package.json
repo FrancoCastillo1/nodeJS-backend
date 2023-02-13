@@ -2,16 +2,21 @@
   "name": "nodejs",
   "version": "1.0.0",
   "main": "class.js",
-  "type": "module",
+   "type":"module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js",
+    "start:dev": "nodemon src/app.js"
   },
   "author": "Franco",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-handlebars": "^6.0.6",
-    "socket.io": "^4.5.4"
+    "mongoose": "^6.9.1",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.6.0"
   }
 }

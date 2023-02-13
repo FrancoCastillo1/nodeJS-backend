@@ -1,9 +1,15 @@
 <div>
     <h2>Productos:</h2>
     <div class="products">
-        {{#each cart}}
+        {{#each products}}
+       <h2>Nombre del producto:{{this.title}}</h2>
        <p>id del producto:{{this.id}}</p> 
-       <p>cantidad:{{this.quankity}}</p>
+       <p>Descripción:{{this.description}}</p>
+       <p>precio:{{this.precio}}</p>
+       <p>staus:{{this.estatus}}</p>
+       <p>stock:{{this.stockTotal}}</p>
+       <p>categoria:{{this.category}} </p>
         {{/each}}
     </div>
 </div>
+<script src="/socket.io/socket.io.js"></script>

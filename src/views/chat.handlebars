@@ -1,0 +1,16 @@
+<section class="enviarMensaje">
+    <input type="text" id="inputText">
+    <button id="submitB">
+        Enviar Mensaje
+    </button>
+</section>
+<section class="mensajes">
+    {{#each mensaje}}
+    <div class="mensaje">
+        <span>{{this.user}}:</span>
+        <span>{{this.message}}</span>
+    </div>
+    {{/each}}
+</section>
+<script src="/socket.io/socket.io.js"></script>
+<script type="/module" src="../public/js/index.js"></script>
