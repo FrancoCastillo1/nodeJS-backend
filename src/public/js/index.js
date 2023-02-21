@@ -1,10 +1,5 @@
-/* const socket = io()
-function socketF(message){
-    return socket.emit("message",message)
-} 
-export default socketF */
-import mensajeManager from "../../dao/messagesManager"
-
+/* import mensajeManager from "../../dao/messagesManager.js" */
+/* console.log(mensajeManager) */
 const input = document.querySelector("#inputText")
 const submit = document.querySelector("#submitB")
 const sectionM = document.querySelector(".mensajes")
@@ -12,13 +7,25 @@ const sectionM = document.querySelector(".mensajes")
 const registarUser = prompt("introduce tu nombre pa")
 const socket = io()
 
-submit.addEventListener("click",async()=>{
-    if(input.value.trimp().length > 2  && registarUser.length > 4 ){
-        const enviar = await mensajeManager.postMessages(registarUser,input.value)
-        if(!enviar) return alert("registarte bien")
-        socket.emit("message",input.value)
-    }
+let arrayRecuperacion = []
+let iterador = 0
+socket.on("nuevoMensaje",data=>{
+   const mensajesRp = sectionM.innerHTML
+   iterador < 1 && arrayRecuperacion.push(mensajesRp)
+   sectionM.innerHTML = ""
+   arrayRecuperacion.forEach((item) => sectionM.innerHTML += item  )
+   data.forEach(element => {
+      sectionM.innerHTML +=element
+  });
+  iterador++
 })
-socket.on("nuevoMensaje",(data)=>{
-    sectionM.innerHTML += data
+submit.addEventListener("click",async()=>{
+    if(input.value.length > 2  && registarUser.length > 4 ){
+       /*  const enviar = await mensajeManager.postMessages(registarUser,input.value)
+        if(!enviar) return alert("registarte bien") */
+        let mensaje = `<div class="mensaje">
+        <span>${registarUser}:</span> <span>${input.value}</span>
+        </div> `
+        socket.emit("message",mensaje)
+    }
 })

@@ -3,3 +3,56 @@
     margin: 0%;
     box-sizing: border-box;
 }
+/*products */
+.products{
+    width: 90%;
+    height: 200px;
+    margin: 10px auto;
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: 65% 35%;
+    grid-template-rows: 100%;
+}
+.products .info{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 20% 40% 40%;
+    grid-template-columns: 100%;
+}
+.products .info .header{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.products .info .body{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-size: 1.7rem;
+}
+.products .info .footer{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    font-size: 1.5rem;
+    place-items: center;
+    grid-template-columns: repeat(2,50%);
+    grid-template-rows: repeat(2,50%);
+}
+.products .agregar{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+.products .agregar button{
+    width: 80%;
+    height: 50px ;
+    background-color: green;
+    color: white;
+    font-size: 1.7rem;
+}

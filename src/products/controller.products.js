@@ -1,27 +1,23 @@
 import { Router } from "express";
 import instancia from "../dao/ProductManager.js";
+import productIntance from "../dao/product.dao.js";
 /* import socketF from "../public/js/index.js"; preguntar sobre sockets*/
 const products = Router()
 
 products.get("/",async(req,res)=>{
-    let limite = req.query.limit
-    const limitN = Number(limite)
-    const acceder = await instancia.getProducts()
-    if(limite){
-        const extraer = acceder.slice(0,limitN)
-        res.render("home",{products:extraer})
-    }
-    res.render("home",{products:acceder})
+    const {sort,query,limit,page} = req.query
+    const products = await productIntance.getProduct(limit,sort,page,query)
+    res.render("home",{products,})
 })
 products.get("/:id",async(req,res)=>{
     const {id} = req.params
-   const producto = await instancia.getProductsById(id)
-    if(!producto) return  res.send({message:`no existe el id ${id} en la base de datos`})
-    return res.send(producto) 
+   const producto = await productIntance.getProductsId(id)
+    if(!producto) return  res.status(404).send({message:`no existe el id ${id} en la base de datos`})
+    return res.json({producto,}) 
 })
 products.post("/",async(req,res) =>{
    const {title,description,price,stock,status,category,thumbails} = req.body
-   const agregar = await instancia.addProduct({title,description,price,thumbails,stock,category,status})
+   const agregar = await productIntance.addProducts({title,description,price,thumbails,stock,category,status})
    if(!agregar) return res.status(403).send("Por favor llena los campos requeridos")
    return res.json({message:"Se agrego el producto correctamente"})
 })

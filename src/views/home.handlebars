@@ -1,15 +1,27 @@
-<div>
+<section class="sectionProducts">
     <h2>Productos:</h2>
+    {{#each products}}
     <div class="products">
-        {{#each products}}
-       <h2>Nombre del producto:{{this.title}}</h2>
-       <p>id del producto:{{this.id}}</p> 
-       <p>Descripción:{{this.description}}</p>
-       <p>precio:{{this.precio}}</p>
-       <p>staus:{{this.estatus}}</p>
-       <p>stock:{{this.stockTotal}}</p>
-       <p>categoria:{{this.category}} </p>
-        {{/each}}
+        <div class="info">
+            <div class="header">
+                <h2>Nombre del producto:{{this.title}}</h2>
+                <p>id del producto:{{this._id}}</p> 
+            </div>
+            <div class="body">
+                <p>Descripción:{{this.description}}</p>
+            </div>
+            <div class="footer">
+                <p>precio:{{this.price}}</p>
+                <p>staus:{{this.status}}</p>
+                <p>stock:{{this.stock}}</p>
+                <p>categoria:{{this.category}} </p>
+            </div>
+        </div>
+        <div class="agregar">
+          <button>Agregar al Carrito</button>
+        </div>
     </div>
-</div>
+        {{/each}}
+</section>
 <script src="/socket.io/socket.io.js"></script>
+

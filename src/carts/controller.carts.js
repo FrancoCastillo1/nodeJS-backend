@@ -1,45 +1,57 @@
 import { Router } from "express";
-import fs from "fs/promises"
-import instancia from "../dao/ProductManager.js";
 import __dirname from "../utilis.js";
+import instanceCart from "../dao/cart.dao.js";
 
 const cart = Router()
 
-cart.post("/",async(req,res) =>{
-    const leer = await fs.readFile(__dirname + "/cart.json","utf-8")
-    const pasarJSON = JSON.parse(leer)
-    const newCarrito = {id: pasarJSON.length ==0?1:pasarJSON.length + 1,products:[]}
-    const convertirS = JSON.stringify(newCarrito)
-    await fs.appendFile("./cart.json",convertirS)
-    res.send("El carrito fue generado satisfactoreamente")
+cart.get("/",async(req,res)=>{
+    let {limit,page,sort,query} = req.query
+    const get = await instanceCart.getCart(limit,sort,page,query)
+    return res.json({payload:get})
 })
 
 cart.get("/:cid",async(req,res) =>{
     const {cid} = req.params
-    const leer = await fs.readFile(__dirname + "/cart.json","utf-8")
-    const pasarJSON = JSON.parse(leer)
-    const buscarCart = pasarJSON.find((pro) => pro.id == cid )
+   const buscarCart = await instanceCart.getCartById(cid)
+    console.log(buscarCart)
     if(!buscarCart) return  res.status(404).send("No se el id del carrito")
-    return res.json({cart:buscarCart.products})
+    return res.json({cart:buscarCart})
 })
 
-cart.post("/:cid/products/:pid",async(req,res) =>{
+cart.post("/",(req,res)=>{
+    const cart = instanceCart.postCart()
+    if(!cart) return res.send("fallo en crearse el carrito")
+    return res.send("Se creo el carrito correctamente")
+})
+
+cart.put("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
-    const leer = await fs.readFile(__dirname + "/cart.json","utf-8")
-    const pasarJSON = JSON.parse(leer)
-    const leerProducts = await instancia.getProductsById(pid)
-    const buscarCart = pasarJSON.findIndex((pro) => pro.id == cid)
-    const cart = pasarJSON.at(buscarCart)
-    if(buscarCart == -1 || !leerProducts) return res.status(404).send("No se el id del carrito o del producto")
+    const {quankity} = req.body
+    const newProduct = instanceCart.putAndPostCart(cid,pid,quankity)
+    if(!newProduct) return res.status(404).send("Hubo un error en id del carrito o del producto")
+    return res.send("se añadio el producto al carrito ")
+})
 
-    const verProductID = cart.products.findIndex((pro) => pro.id ==pid )
-    const verProduct = cart.products[verProductID]
-    const newQuankity = {id:leerProducts.id,quankity:verProduct?verProduct.quankity +=1:1}
-    verProduct ? cart.products.splice(verProductID,1,newQuankity):cart.products.push({id:leerProducts.id,quankity: 1})
-    pasarJSON.splice(buscarCart,1,cart)
-    const convertirJSON = JSON.stringify(pasarJSON)
-    await fs.writeFile("./cart.json",convertirJSON)
+cart.patch("/:cid/products/:pid",async(req,res) =>{
+    const {cid,pid} = req.params
+    const {quankity} = req.body
+    const newProduct = instanceCart.patchProducts(cid,pid,quankity)
+    if(!newProduct) return res.send("Hubo un error en id del carrito o del producto")
+    return res.send("se actualizo la cantidad de ejemplares del producto")
+})
 
+cart.delete("/:cid/products/:pid",async(req,res)=>{
+    const {cid,pid} = req.params
+    const deleteP = await instanceCart.deleteProduct(cid,pid)
+    if(!deleteP) return res.status(404).send("Hubo un error en id del carrito o del producto")
+    return res.send("se elimino el producto correctamente")
+})
+
+cart.delete("/:cid",async(req,res)=>{
+    const {cid} = req.params
+    const deleteC = await instanceCart.deleteCart(cid)
+    if(!deleteC) return res.status(404).send("No existe el id del carrito")
+    res.send("se elimino el carrito ")
 })
 
 export default cart
