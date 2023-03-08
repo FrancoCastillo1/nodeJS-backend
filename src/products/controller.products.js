@@ -1,13 +1,17 @@
 import { Router } from "express";
 import instancia from "../dao/ProductManager.js";
-import productIntance from "../dao/product.dao.js";
-/* import socketF from "../public/js/index.js"; preguntar sobre sockets*/
+import ProductManager from "../dao/product.dao.js";
+
 const products = Router()
+const productIntance = new ProductManager()
 
 products.get("/",async(req,res)=>{
     const {sort,query,limit,page} = req.query
     const products = await productIntance.getProduct(limit,sort,page,query)
-    res.render("home",{products,})
+   /*  const {user} = req.session
+    console.log(user) */
+    console.log("wow",req.session ,"y",req.session.user)
+     res.render("home.handlebars",{products/* ,user */})
 })
 products.get("/:id",async(req,res)=>{
     const {id} = req.params

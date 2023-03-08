@@ -4,6 +4,13 @@ import routes from "./router/index.js";
 import handlebars  from "express-handlebars";
 import mongoose from "mongoose";
 import config from "./config/index.js";
+/* import passport from "passport"; */
+/* import inicailizePassport from "./config/passport-config.js"; */
+import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
+import session from "express-session"
+
+const {password,admin,sessionStore} = config
 
 const app = express();
 app.engine("handlebars",handlebars.engine())
@@ -11,17 +18,27 @@ app.set("views",__dirname + "/views")
 app.set("view engine", "handlebars")
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use("/public",express.static( __dirname + "/public"))
+app.use(express.static( __dirname + "/public"))
+/* inicailizePassport() */
+app.use(cookieParser())
+/* app.use(passport.initialize())
+app.use(passport.session()) */
+app.use(session({
+    store:MongoStore.create({
+        mongoUrl:`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,
+        mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
+        ttl:15, //se mide en segundos, si no ponemos nada serán 15 días(no recomendable), es el tiempo el cual moongose almacenará nuestra session o cuanto tiempo estará abierta
+    }),
+    secret:sessionStore,
+    resave:false, 
+    saveUninitialized:false
+}))
 
-const {password,admin} = config
 
 mongoose.set("strictQuery",false) 
-mongoose.connect(`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,(error)=>{ // si no funciona falta un 
-    if(error){
-        return console.log(error)
-    }
-
-})
+mongoose.connect(`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`)
+.then(res => console.log("db is connected"))
+.catch(err => console.log(err) )
 
 routes(app)
 

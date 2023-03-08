@@ -1,9 +1,17 @@
 import { Router } from "express";
-import { io } from "socket.io-client";
+import ProductManager from "../dao/product.dao.js";
 
 const real = Router()
-const socket = io()
-real.get("/",(req,res)=>{
-    res.render("realtimeProducts")
+const productsInstance = new ProductManager()
+real.get("/",async(req,res)=>{
+    const {sort,query,limit,page} = req.query
+    const products = await productIntance.getProduct(limit,sort,page,query)
+    res.render("home",{products,})
+})
+real.post("/",async(req,res)=>{
+    const {title,description,price,stock,status,category,thumbails} = req.body
+    const agregar = await productsInstance.addProducts({title,description,price,thumbails,stock,category,status})
+    if(!agregar) return res.status(403).send("Por favor llena los campos requeridos")
+    return res.json({payload:agregar})
 })
 export default real

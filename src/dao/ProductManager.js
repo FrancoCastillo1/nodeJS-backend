@@ -1,37 +1,41 @@
 import fs from "fs/promises";
 import __dirname from "../utilis.js";
 import { io } from "socket.io-client";
-const leer = await fs.readFile(`${__dirname}/express.json`,"utf-8") //porque me funcion asi retrocede una carpeta y teien que retroceder 2
-let pasarJson = JSON.parse(leer)
 const socket = io()
 class ProductManager{
-    constructor(){
+    constructor (){
+        this.ruta = `${__dirname}/express.json`
         this.products = []
     }
+    async getProducts(){
+      try{
+          const leer = await fs.readFile(`${this.ruta}`,"utf-8") 
+          let pasarJson = JSON.parse(leer)
+          return pasarJson
+      }catch(e){
+        return {message:e}
+      }  
+     }
     async addProduct({title,description,price,thumbnail= "Sin i",stock,category,status = true }){
+       const get =await this.getProducts()
        const estatus = Boolean(status)
        const stockTotal = Number(stock)
         const precio = Number(price)
         if((title.length <3 || description.length <10 || precio.length <1 || stockTotal.length <1 ||  estatus == false  || category.length < 11))return false ;
-        else{
             if(leer){
-             let id=  pasarJson.at(-1).id +=1 
-             this.products.push({title,description,precio,thumbnail,stockTotal,id,category,estatus})
+             let id=  get.at(-1).id +=1 
+             this.products.push({title,description,price:precio,thumbnail,stock:stockTotal,id,category,status:estatus})
             }else{
                 let id = 1
-                this.products.push({title,description,precio,thumbnail,stockTotal,id,category,estatus} )
+                this.products.push({title,description,price:precio,thumbnail,stock:stockTotal,id,category,status:estatus})
             }
             const convertir = JSON.stringify(...this.products)
             try{
-                await fs.appendFile(`${__dirname}/express.json`,convertir)
-                return true
+                await fs.writeFile(`${__dirname}/express.json`,convertir)
+                return get.at(-1).id +=1 
             }catch(e){
                 console.error("No se pudo registrar, hubo un error en",e)
             }
-        }
-    }
-   async getProducts(){
-       return pasarJson
     }
    async getProductsById(id){
        const buscar = pasarJson.find((item)=>item.id == id)

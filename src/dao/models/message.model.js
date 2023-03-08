@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const messagesColection = "messages"
 
-const messagesSchema = mongoose.Schema({
+const messagesSchema = new mongoose.Schema({
     user:{
         type:String,
         unique:false

@@ -1,5 +1,40 @@
+<div class="bienvenida">
+    <h2>Bievenido{{this.firts_name}} {{this.lastName}}</h2>
+    <p>Correo de página:{{this.email}}</p>
+</div>
+<div>
+    <h1>Ingresar Datos</h1>
+    <form id="productForm">
+        <div>
+            <label for="title">Nombre del Producto</label>
+            <input type="text" name="title" id="title" />
+        </div>
+        <div>
+            <label for="description">Descripcion</label>
+            <input type="text" name="description" id="description" />
+        </div>
+        <div>
+            <label for="price">Precio</label>
+            <input type="text" name="price" id="price" />
+        </div>
+        <div>
+            <label for="stock">Stock</label>
+            <input type="text" name="stock" id="stock" />
+        </div>
+        <div>
+            <label for="category">Category</label>
+            <input type="text" name="category" id="category" />
+        </div>
+        <div>
+            <label for="thumbnail">Ingrese la imagen</label>
+            <input type="text" name="thumbail" id="thumbnail" />
+        </div>
+        <button type="submit" id="btnProduct">Enviar</button>
+    </form>
+</div>
+
+<h2>Productos:</h2>
 <section class="sectionProducts">
-    <h2>Productos:</h2>
     {{#each products}}
     <div class="products">
         <div class="info">

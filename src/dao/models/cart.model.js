@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import mongoosePaginate from "mongoose-paginate-v2"
 const cartColection = "cart"
-const cartSchema = mongoose.Schema({
+const cartSchema = new mongoose.Schema({
     products:[
         {
             product:{
@@ -12,9 +12,7 @@ const cartSchema = mongoose.Schema({
         }
     ]
 })
+cartSchema.pre("findOne",function () {this.populate("products.product")})
 cartSchema.plugin(mongoosePaginate)
 const Cart = mongoose.model(cartColection,cartSchema)
-cartSchema.pre("findOne",function () {
-    this.populate("products.product")
-})
 export default Cart
