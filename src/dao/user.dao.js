@@ -17,7 +17,7 @@ class UserClass{
     }
     async postUser(obj){
         try{
-            const newObj = {...obj,rol:"User"}
+            let newObj = {...obj,rol:"User"}
             const user = await User.create(newObj)
             return user
         }catch(e){

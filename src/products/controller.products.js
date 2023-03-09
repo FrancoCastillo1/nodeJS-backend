@@ -8,10 +8,10 @@ const productIntance = new ProductManager()
 products.get("/",async(req,res)=>{
     const {sort,query,limit,page} = req.query
     const products = await productIntance.getProduct(limit,sort,page,query)
-   /*  const {user} = req.session
-    console.log(user) */
-    console.log("wow",req.session ,"y",req.session.user)
-     res.render("home.handlebars",{products/* ,user */})
+    const {user} = req.session
+    console.log(user)
+    console.log("wow",req.session ,"y",user)
+    res.render("home.handlebars",{products,user})
 })
 products.get("/:id",async(req,res)=>{
     const {id} = req.params

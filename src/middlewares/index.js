@@ -1,9 +1,9 @@
-import sessionExist from "./sessionExist.js";
+/* import sessionExist from "./sessionExist.js";
 import notSession from "./notsession.js";
 
 const barril = {
-    sessionExist,
     notSession,
+    sessionExist,
 }
 
-export default barril
+export default barril */
