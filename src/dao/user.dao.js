@@ -1,5 +1,5 @@
 import User from "./models/user.model.js";
-
+import { createHash } from "../utlis/createpassword.js";
 
 class UserClass{
     async getUser(obj){
@@ -17,6 +17,8 @@ class UserClass{
     }
     async postUser(obj){
         try{
+            const {password} = obj
+            obj.password = createHash(password)
             let newObj = {...obj,rol:"User"}
             const user = await User.create(newObj)
             return user

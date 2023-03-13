@@ -5,11 +5,10 @@ console.log(form)
     console.log("is",form)
     e.preventDefault()
     const data = new FormData(form)
-    console.log("xd",data)
     const obj = {}
     data.forEach((value,key)=> obj[key] = value )
     console.log(obj)
-    const url = "/user"
+    const url = "/auth"
     const headers = {
         "Content-Type": "application/json",
     }

@@ -4,8 +4,8 @@ import routes from "./router/index.js";
 import handlebars  from "express-handlebars";
 import mongoose from "mongoose";
 import config from "./config/index.js";
-/* import passport from "passport"; */
-/* import inicailizePassport from "./config/passport-config.js"; */
+import passport from "passport";
+import inicailizePassport from "./config/passport-config.js";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import session from "express-session"
@@ -19,32 +19,21 @@ app.engine("handlebars",handlebars.engine())
 app.set("views",__dirname + "/views") 
 app.set("view engine", "handlebars")
 app.use(express.static( __dirname + "/public"))
-/* inicailizePassport() */
 app.use(cookieParser())
-/* app.use(passport.initialize())
-app.use(passport.session()) */
 
 app.use(session({
-    store: MongoStore.create({
-      mongoUrl: `mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      ttl:60, //se mide en segundos, si no ponemos nada serán 15 días(no recomendable), es el tiempo el cual moongose almacenará nuestra session o cuanto tiempo estará abierta
-    }),
-    secret: 'loQueQuieras',
-    resave: false,
-    saveUninitialized: false
-  }))
-
-/* app.use(session({
-    store:MongoStore.create({
-        mongoUrl:`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,
-        mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
-        ttl:15, se mide en segundos, si no ponemos nada serán 15 días(no recomendable), es el tiempo el cual moongose almacenará nuestra session o cuanto tiempo estará abierta
-    }),
-    secret:"loquequieras",
-    resave:false, 
-    saveUninitialized:false
-})) */
+  store: MongoStore.create({
+    mongoUrl: `mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,
+    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+    ttl:60, //se mide en segundos, si no ponemos nada serán 15 días(no recomendable), es el tiempo el cual moongose almacenará nuestra session o cuanto tiempo estará abierta
+  }),
+  secret: 'loQueQuieras',
+  resave: false,
+  saveUninitialized: false
+}))
+inicailizePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 mongoose.set("strictQuery",false) 
 mongoose.connect(`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`)

@@ -1,19 +1,22 @@
 import { Router } from "express";
 import instancia from "../dao/ProductManager.js";
 import ProductManager from "../dao/product.dao.js";
+import barril from "../middlewares/index.js";
 
 const products = Router()
 const productIntance = new ProductManager()
 
-products.get("/",async(req,res)=>{
+const {notSession,} = barril
+
+
+products.get("/",notSession,async(req,res)=>{
     const {sort,query,limit,page} = req.query
     const products = await productIntance.getProduct(limit,sort,page,query)
     const {user} = req.session
     console.log(user)
-    console.log("wow",req.session ,"y",user)
     res.render("home.handlebars",{products,user})
 })
-products.get("/:id",async(req,res)=>{
+products.get("/:id",notSession,async(req,res)=>{
     const {id} = req.params
    const producto = await productIntance.getProductsId(id)
     if(!producto) return  res.status(404).send({message:`no existe el id ${id} en la base de datos`})
