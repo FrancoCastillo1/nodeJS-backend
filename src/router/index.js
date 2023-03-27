@@ -5,15 +5,20 @@ import message from "../message/controller.message.js"
 import viewsTemplates from "../viewsTemplate/views.template.js"
 import auth from "../auth/controller.auth.js"
 import admin from "../admin/controller.admin.js"
+import session from "../session/controller.session.js"
 
 const routes = (app) =>{
    app.use("/",viewsTemplates)
    app.use("/api/products", products)
    app.use("/api/cart",cart)
+   app.use("/api/sessions",session)
    app.use("/realtimeproducts",real)
    app.use("/messages",message)
    app.use("/auth",auth)
    app.use("/admin",admin)
+   app.use("*" ,(req,res)=>{
+      res.status(404).json({error:"Not found"})
+   })
 }
 
 export default routes

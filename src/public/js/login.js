@@ -27,6 +27,5 @@ form.addEventListener("submit",async(e)=>{
     }
     const method = "POST"
     const body = JSON.stringify(obj)
-    let result = await fetchF(url,headers,method,body)
-    console.log(result)
+    await fetchF(url,headers,method,body)
 })

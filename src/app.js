@@ -3,7 +3,6 @@ import config from "./config/index.js";
 import { Server } from "socket.io";
 
 const {port} = config
-console.log(port)
 const http = app.listen(port,()=> console.log(`server running on port ${port}`))
 
 let array = []

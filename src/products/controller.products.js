@@ -9,14 +9,14 @@ const productIntance = new ProductManager()
 const {notSession,} = barril
 
 
-products.get("/",notSession,async(req,res)=>{
+products.get("/",/* ,notSession, */async(req,res)=>{
     const {sort,query,limit,page} = req.query
     const products = await productIntance.getProduct(limit,sort,page,query)
-    const {user} = req.session
+    /* const {user} = req.session */
     console.log(user)
     res.render("home.handlebars",{products,user})
 })
-products.get("/:id",notSession,async(req,res)=>{
+products.get("/:id",/* notSession */async(req,res)=>{
     const {id} = req.params
    const producto = await productIntance.getProductsId(id)
     if(!producto) return  res.status(404).send({message:`no existe el id ${id} en la base de datos`})

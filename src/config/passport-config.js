@@ -6,9 +6,17 @@ import { createHash, isValidPassword } from "../utlis/createpassword.js";
 import User from "../dao/models/user.model.js"
 import GitHubStrategy from "passport-github2"
 import config from "./index.js";
+import GoogleSrategy from "passport-google-oauth20"
+import { ExtractJwt,Strategy } from "passport-jwt";
+import cookieExtractor from "../utlis/cookieExtractor.js";
+import { generateToken } from "../utlis/jwt.utilis.js";
 
-const {clientIdGH,clientSecretGH} = config
+const {clientIdGH,clientSecretGH,clientIdGG,clientSecretGG} = config
 const LocalStrategy = local.Strategy // instanciamos
+const newGoogleSrategy = GoogleSrategy.Strategy
+const JWTStrategy = Strategy
+
+const {secretJWT} = config
 
 const inicailizePassport  = () =>{
     passport.use(
@@ -34,18 +42,19 @@ const inicailizePassport  = () =>{
     
               return done(null, newUser);
             } catch (error) { 
+              if(err.code == 11000){
+                return done("El usuario ya existe")
+              } 
               return done(error);
             }
           }
         )
       );
   passport.serializeUser((user,done) =>{
-    console.log("este",user)
     done(null,user._id)
   })
 
   passport.deserializeUser(async(id,done) =>{
-    console.log("vas",id)
     try{
         const user = await User.findById(id)
         done(null,user)
@@ -55,14 +64,13 @@ const inicailizePassport  = () =>{
   })
   passport.use("login", new LocalStrategy(
     {passReqToCallback:true,usernameField:"email"}, async (req,username,password,done) =>{
-        console.log("aaaaa")
         try{
             const user = await User.findOne({email:username})
             if(!user){ console.log("No existe el usuario"); return done(null,false)}
             if(!isValidPassword(user,password)) return done(null,false)
             return done(null,user)
-        }catch(err){
-           return done(err)
+        }catch(error){
+           return done(error)
         }
     }
   ))
@@ -89,8 +97,51 @@ const inicailizePassport  = () =>{
             const create = await User.create(newUserInfo)
             return done(null,create)
         }catch(err){
+          if(err.code == 11000){
+            return done("El usuario ya existe")
+          } 
             done(err)
         }
   }))
+
+  passport.use("google", new newGoogleSrategy(
+     {
+        clientID:clientIdGG,
+        clientSecret:clientSecretGG,
+        callbackURL:"http://localhost:8080/auth/google/callback"
+     },
+     async(accessToken,refreshToken,profile,done) =>{
+        try{
+            console.log(profile._json.sub)
+            const user =  await User.findOne({googleId:profile._json.sub})
+            if(user !== null || user) return done(null,user)
+           const newUserInfo ={
+                googleId:profile._json.sub,
+                firts_name:profile._json.given_name,
+                last_name:profile._json.family_name,
+                password:"",
+            }
+            const newUser = await User.create(newUserInfo)
+            return done(null,newUser)
+        }catch(err){
+          if(err.code == 11000)return  done(false)
+            return done(err)
+        }
+     }   
+  ))
+
+  passport.use("current", new JWTStrategy(
+    {
+      jwtFromRequest:ExtractJwt.fromExtractors([cookieExtractor]),
+      secretOrKey:secretJWT
+    },
+    async (jwt_payload,done) =>{
+      try{
+        return done(null,jwt_payload)
+      }catch(err){
+        return done(err)
+      }
+    }
+  ))
 }
 export default inicailizePassport

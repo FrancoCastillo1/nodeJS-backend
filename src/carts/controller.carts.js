@@ -2,7 +2,18 @@ import { Router } from "express";
 import __dirname from "../utilis.js";
 import instanceCart from "../dao/cart.dao.js";
 
+
 const cart = Router()
+
+const wordA = ["perro","gato","loro","animal"]
+
+cart.param("word",(req,res,next,word)=>{ // creamos esto cuando hay mucho parametro repetido, por esto este middleware
+    const searchword = wordA.find(wordI => wordI == word ) // esto simularía ser una base de datos
+    const regex = /^[a-zA-Z0-9]+$/
+    if(searchword && regex.test(searchword)) req.word = searchword
+    else req.word = null // evaluo si cumple con la expresión
+    next() // refactorizar o borrar luego
+})
 
 cart.get("/",async(req,res)=>{
     let {limit,page,sort,query} = req.query

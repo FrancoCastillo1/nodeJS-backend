@@ -7,10 +7,10 @@ import config from "./config/index.js";
 import passport from "passport";
 import inicailizePassport from "./config/passport-config.js";
 import cookieParser from "cookie-parser";
-import MongoStore from "connect-mongo";
+/* import MongoStore from "connect-mongo"; */
 import session from "express-session"
 
-const {password,admin/* ,sessionStore */} = config
+const {password,admin,sessionStore} = config
 
 const app = express();
 app.use(express.json())
@@ -22,12 +22,12 @@ app.use(express.static( __dirname + "/public"))
 app.use(cookieParser())
 
 app.use(session({
-  store: MongoStore.create({
+  /* store: MongoStore.create({
     mongoUrl: `mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,
     mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-    ttl:60, //se mide en segundos, si no ponemos nada serán 15 días(no recomendable), es el tiempo el cual moongose almacenará nuestra session o cuanto tiempo estará abierta
-  }),
-  secret: 'loQueQuieras',
+    ttl:60, 
+  }), */
+  secret: sessionStore,
   resave: false,
   saveUninitialized: false
 }))

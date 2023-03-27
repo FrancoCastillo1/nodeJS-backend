@@ -19,8 +19,7 @@ class UserClass{
         try{
             const {password} = obj
             obj.password = createHash(password)
-            let newObj = {...obj,rol:"User"}
-            const user = await User.create(newObj)
+            const user = await User.create(obj)
             return user
         }catch(e){
            if(e.code == 1100) return;
