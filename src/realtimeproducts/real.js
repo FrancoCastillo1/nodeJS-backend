@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductManager from "../dao/product.dao.js";
+import ProductManager from "../persisit/ProductManager.js";
 
 const real = Router()
 const productsInstance = new ProductManager()

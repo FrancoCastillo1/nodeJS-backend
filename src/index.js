@@ -2,7 +2,7 @@ import express from "express";
 import __dirname from "./utilis.js";
 import routes from "./router/index.js";
 import handlebars  from "express-handlebars";
-import mongoose from "mongoose";
+/* import mongoose from "mongoose"; */
 import config from "./config/index.js";
 import passport from "passport";
 import inicailizePassport from "./config/passport-config.js";
@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 /* import MongoStore from "connect-mongo"; */
 import session from "express-session"
 
-const {password,admin,sessionStore} = config
+const {/* password,admin, */sessionStore} = config
 
 const app = express();
 app.use(express.json())
@@ -35,10 +35,10 @@ inicailizePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
-mongoose.set("strictQuery",false) 
+/* mongoose.set("strictQuery",false) 
 mongoose.connect(`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`)
 .then(res => console.log("db is connected"))
-.catch(err => console.log(err) )
+.catch(err => console.log(err) ) */
 
 routes(app)
 

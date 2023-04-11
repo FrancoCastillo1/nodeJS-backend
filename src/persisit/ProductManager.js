@@ -1,7 +1,5 @@
 import fs from "fs/promises";
 import __dirname from "../utilis.js";
-import { io } from "socket.io-client";
-const socket = io()
 class ProductManager{
     constructor (){
         this.ruta = `${__dirname}/express.json`
@@ -67,7 +65,7 @@ class ProductManager{
         return true
     }
 }
-const instancia = new ProductManager()
+/* const instancia = new ProductManager() */
 // desafio pasado(jueves 5/1/23)
 /* async function parsearJson(){
     await instancia.addProduct({title:"producto de prueba",description:"Este es un producto prueba",price:200,thumbnail:"Sin imagen",code:"a38545",stock:25})
@@ -77,4 +75,4 @@ const instancia = new ProductManager()
   await instancia.deleteProduct(6)
 } */
 /* parsearJson() */
-export default instancia
+export default ProductManager

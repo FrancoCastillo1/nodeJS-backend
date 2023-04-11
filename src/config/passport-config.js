@@ -3,7 +3,7 @@
 import passport from "passport";
 import local from "passport-local" //importamos local
 import { createHash, isValidPassword } from "../utlis/createpassword.js";
-import User from "../dao/models/user.model.js"
+import User from "../models/user.model.js"
 import GitHubStrategy from "passport-github2"
 import config from "./index.js";
 import GoogleSrategy from "passport-google-oauth20"

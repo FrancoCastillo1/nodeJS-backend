@@ -1,6 +1,6 @@
 import { Router } from "express";
-import instancia from "../dao/ProductManager.js";
-import ProductManager from "../dao/product.dao.js";
+/* import instancia from "../dao/ProductManager.js"; */
+import ProductManager from "../persisit/ProductManager.js"
 import barril from "../middlewares/index.js";
 
 const products = Router()

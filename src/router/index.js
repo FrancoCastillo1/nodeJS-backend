@@ -1,11 +1,11 @@
-import products from "../products/controller.products.js"
-import cart from "../carts/controller.carts.js"
+import products from "../controller/controller.products.js"
+import cart from "../controller/controller.carts.js"
 import real from "../realtimeproducts/real.js"
-import message from "../message/controller.message.js"
+import message from "../controller/controller.message.js"
 import viewsTemplates from "../viewsTemplate/views.template.js"
-import auth from "../auth/controller.auth.js"
-import admin from "../admin/controller.admin.js"
-import session from "../session/controller.session.js"
+import auth from "../controller/controller.auth.js"
+import admin from "../controller/controller.admin.js"
+import session from "../controller/controller.session.js"
 
 const routes = (app) =>{
    app.use("/",viewsTemplates)

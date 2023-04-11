@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import UserClass from "../dao/user.dao.js";
+import UserClass from "../persisit/user.persist.js";
 import {generateToken} from "../utlis/jwt.utilis.js"
 /* import { generateToken } from "../utlis/jwt.utilis.js"; */
 

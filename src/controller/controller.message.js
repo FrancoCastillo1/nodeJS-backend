@@ -1,6 +1,6 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import mensajeManager from "../dao/messagesManager.js";
+import mensajeManager from "../persisit/messages.presist.js";
 
 const message = Router()
 

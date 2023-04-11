@@ -1,4 +1,4 @@
-import Products from "./models/products.model.js";
+import Products from "../models/products.model.js";
 import fs from "fs/promises"
 class ProductManager{
     async getProduct(limit,sortP ,page,query){
@@ -10,7 +10,6 @@ class ProductManager{
                 ...item._doc,
                 };
              });
-             console.log("y",map)
               return map;
             }
             const products = await Products.find()
