@@ -1,6 +1,6 @@
 import { Router } from "express";
 import __dirname from "../utilis.js";
-import instanceCart from "../persisit/cart.persisit.js";
+import instanceCart from "../DAO/mongo/cart.dao.js";
 
 
 const cart = Router()
@@ -19,6 +19,10 @@ cart.get("/",async(req,res)=>{
     let {limit,page,sort,query} = req.query
     const get = await instanceCart.getCart(limit,sort,page,query)
     return res.json({payload:get})
+})
+
+cart.post("/:cid/purchase",async(req,res) =>{
+
 })
 
 cart.get("/:cid",async(req,res) =>{
@@ -61,6 +65,7 @@ cart.delete("/:cid/products/:pid",async(req,res)=>{
 cart.delete("/:cid",async(req,res)=>{
     const {cid} = req.params
     const deleteC = await instanceCart.deleteCart(cid)
+    console.log("hola  ",deleteC)
     if(!deleteC) return res.status(404).send("No existe el id del carrito")
     res.send("se elimino el carrito ")
 })

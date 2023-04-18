@@ -1,5 +1,5 @@
-import User from "../models/user.model.js";
-import { createHash } from "../utlis/createpassword.js";
+import User from "./models/user.model.js";
+import { createHash } from "../../utlis/createpassword.js";
 
 class UserClass{
     async getUser(obj){

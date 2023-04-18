@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import __dirname from "../utilis.js";
+import __dirname from "../../utilis.js";
 class ProductManager{
     constructor (){
         this.ruta = `${__dirname}/express.json`
@@ -65,14 +65,5 @@ class ProductManager{
         return true
     }
 }
-/* const instancia = new ProductManager() */
-// desafio pasado(jueves 5/1/23)
-/* async function parsearJson(){
-    await instancia.addProduct({title:"producto de prueba",description:"Este es un producto prueba",price:200,thumbnail:"Sin imagen",code:"a38545",stock:25})
-   await instancia.getProducts()
-  await instancia.getProductsById(3)
-  await instancia.upDateProduct(2,"stock",109)
-  await instancia.deleteProduct(6)
-} */
-/* parsearJson() */
+
 export default ProductManager

@@ -3,7 +3,7 @@
 import passport from "passport";
 import local from "passport-local" //importamos local
 import { createHash, isValidPassword } from "../utlis/createpassword.js";
-import User from "../models/user.model.js"
+import User from "../DAO/mongo/models/user.model.js"
 import GitHubStrategy from "passport-github2"
 import config from "./index.js";
 import GoogleSrategy from "passport-google-oauth20"
@@ -42,7 +42,7 @@ const inicailizePassport  = () =>{
     
               return done(null, newUser);
             } catch (error) { 
-              if(err.code == 11000){
+              if(error.code == 11000){
                 return done("El usuario ya existe")
               } 
               return done(error);

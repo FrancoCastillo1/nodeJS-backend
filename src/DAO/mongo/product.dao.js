@@ -1,4 +1,4 @@
-import Products from "../models/products.model.js";
+import Products from "./models/products.model.js";
 import fs from "fs/promises"
 class ProductManager{
     async getProduct(limit,sortP ,page,query){
@@ -39,6 +39,17 @@ class ProductManager{
             return post
         }catch(error){
             return false
+        }
+    }
+    async updateProducts(pid,update,valueUpDate){
+        try{
+            const put = await Products.updateOne(
+                {_id:pid},
+                {$set:{[update]:valueUpDate}}
+                )
+            return put
+        }catch(e){
+            throw new Error(e)
         }
     }
 }

@@ -1,4 +1,4 @@
-import Messages from "../models/message.model.js";
+import Messages from "./models/message.model.js";
 
 class ClassMessage{
     async getMessages(){

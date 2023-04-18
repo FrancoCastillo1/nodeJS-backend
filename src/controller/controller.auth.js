@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import UserClass from "../persisit/user.persist.js";
+import UserClass from "../DAO/mongo/user.dao.js";
 import {generateToken} from "../utlis/jwt.utilis.js"
 /* import { generateToken } from "../utlis/jwt.utilis.js"; */
 

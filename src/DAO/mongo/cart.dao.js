@@ -1,5 +1,5 @@
-import Cart from "../models/cart.model.js"
-import Products from "../models/products.model.js"
+import Cart from "./models/cart.model.js"
+import Products from "./models/products.model.js"
 
 class CartManager{
     constructor(file){
@@ -16,7 +16,7 @@ class CartManager{
     }
     async getCartById(cid){
         try{
-            const cartId = await Cart.findOne({_id:cid})/* .populate("products.product") */
+            const cartId = await Cart.findOne({_id:cid})
             return cartId
         }catch(error){
             console.log(error)
@@ -66,12 +66,10 @@ class CartManager{
     }
     async deleteCart(cid){
         try{
-            const borrar = await Cart.findOne({_id:cid})
-            borrar.products.splice(0,borrar.length)
-            const upDate = await Cart.updateOne({_id:cid},borrar)
+            const upDate = await Cart.deleteOne({_id:cid})
+            console.log(upDate)
             return upDate
         }catch(error){
-           console.log(typeof(error))
            return false
         }
     }
