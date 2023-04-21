@@ -37,7 +37,7 @@ class CartManager{
         try{
             const cart = await Cart.findOne({_id:cid})
             const product = await Products.findOne({_id:pid})
-            if(!product) return false
+            if(!product || !cart) return false
             cart.products.push({product:pid,quankity})
             const result = await Cart.updateOne({_id:cid},cart)
             return result

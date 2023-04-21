@@ -3,6 +3,7 @@ import addProducts from "../service/products.service.js";
 /* import instancia from "../dao/ProductManager.js"; */
 import ProductManager from "../DAO/mongo/product.dao.js"
 import barril from "../middlewares/index.js";
+import ProductDTO from "../DTOs/Product.dto.js";
 /* import Products from "../DAO/mongo/models/products.model.js"; */
 
 const products = Router()
@@ -25,15 +26,17 @@ products.get("/:id",/* notSession */async(req,res)=>{
     return res.json({producto,}) 
 })
 products.post("/",async(req,res) =>{
-   const {title,description,price,stock,status,category,thumbails} = req.body
-   const agregar = /* await */ /* productIntance. */addProducts({title,description,price,stock,category,status,thumbails})
+ /*   const {title,description,price,stock,status,category,thumbails} = req.body */
+    const productDto = new ProductDTO(req.body)
+    console.log(productDto)
+   const agregar = await addProducts(productDto)
    if(!agregar) return res.status(403).send("Por favor llena los campos requeridos")
    return res.json({message:"Se agrego el producto correctamente"})
 })
 products.patch("/:id",async(req,res) =>{
     const {id} = req.params
     const {actualizar,info} = req.body
-    const actualizarPro = await productIntance.upDateProduct({id,actualizar,info})
+    const actualizarPro = await productIntance.updateProducts({id,actualizar,info})
     if(!actualizarPro) return res.status(404).send("No se encontro la clave")
     res.send("El producto se actualizo correctamente")
 })

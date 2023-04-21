@@ -9,8 +9,10 @@ import inicailizePassport from "./config/passport-config.js";
 import cookieParser from "cookie-parser";
 /* import MongoStore from "connect-mongo"; */
 import session from "express-session"
+import conectMongo from "./db/mongo.init.js";
+import errorHandler from "./middlewares/handler.error.js";
 
-const {/* password,admin, */sessionStore} = config
+const {sessionStore} = config
 
 const app = express();
 app.use(express.json())
@@ -34,12 +36,14 @@ app.use(session({
 inicailizePassport()
 app.use(passport.initialize())
 app.use(passport.session())
-
+/* app.use({
+  bro
+}) */
 /* mongoose.set("strictQuery",false) 
 mongoose.connect(`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`)
 .then(res => console.log("db is connected"))
 .catch(err => console.log(err) ) */
-
+/* conectMongo() */
 routes(app)
 
 export default app

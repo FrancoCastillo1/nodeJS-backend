@@ -14,7 +14,7 @@ class ProductManager{
         return {message:e}
       }  
      }
-    async addProduct({title,description,price,thumbnail= "Sin i",stock,category,status = true }){
+    async addProducts({title,description,price,thumbnail= "Sin i",stock,category,status = true }){
        const get =await this.getProducts()
        const estatus = Boolean(status)
        const stockTotal = Number(stock)

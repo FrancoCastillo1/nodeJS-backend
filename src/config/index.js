@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 const config = {
+    persistence:process.env.PERSIST,
     port: process.env.PORT || 3000, 
     admin:process.env.ADMIN_DB, 
     password:process.env.PASSWORD_DB,

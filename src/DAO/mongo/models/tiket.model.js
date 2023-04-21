@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
-
-const uuid = uuidv4();
 
 const collectionTicket = "ticket"
 
 const ticketSchema = new mongoose.Schema({
-    code: uuid,
+    code: String,
     purchase_datetime: String,
     ammount:Number,
     purchaser:String,
 })
+
+const Ticket = mongoose.model(collectionTicket,ticketSchema)
+
+export default Ticket

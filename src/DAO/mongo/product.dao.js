@@ -1,4 +1,5 @@
 import Products from "./models/products.model.js";
+import mongoose from "mongoose";
 import fs from "fs/promises"
 class ProductManager{
     async getProduct(limit,sortP ,page,query){
@@ -43,9 +44,10 @@ class ProductManager{
     }
     async updateProducts(pid,update,valueUpDate){
         try{
+            const idMonngo = mongoose.Types.ObjectId(pid);
             const put = await Products.updateOne(
-                {_id:pid},
-                {$set:{[update]:valueUpDate}}
+                {_id:idMonngo},
+                {$set:{[update]:valueUpDate}},
                 )
             return put
         }catch(e){

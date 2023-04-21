@@ -18,7 +18,7 @@ const productsSchema = new mongoose.Schema({
         default:"Sin imagen"
     },
     status:{
-        type:String,
+        type:Boolean,
         default:true
     },
     category:String,

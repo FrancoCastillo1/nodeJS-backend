@@ -2,7 +2,6 @@ import { Router } from "express";
 import __dirname from "../utilis.js";
 import instanceCart from "../DAO/mongo/cart.dao.js";
 
-
 const cart = Router()
 
 const wordA = ["perro","gato","loro","animal"]
@@ -32,17 +31,10 @@ cart.get("/:cid",async(req,res) =>{
     if(!buscarCart) return  res.status(404).send("No se el id del carrito")
     return res.json({cart:buscarCart})
 })
-
-cart.post("/",(req,res)=>{
-    const cart = instanceCart.postCart()
-    if(!cart) return res.send("fallo en crearse el carrito")
-    return res.send("Se creo el carrito correctamente")
-})
-
 cart.put("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
-    const newProduct = instanceCart.putAndPostCart(cid,pid,quankity)
+    const newProduct = await instanceCart.putAndPostCart(cid,pid,quankity)
     if(!newProduct) return res.status(404).send("Hubo un error en id del carrito o del producto")
     return res.send("se añadio el producto al carrito ")
 })
@@ -50,7 +42,7 @@ cart.put("/:cid/products/:pid",async(req,res) =>{
 cart.patch("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
-    const newProduct = instanceCart.patchProducts(cid,pid,quankity)
+    const newProduct = await instanceCart.patchProducts(cid,pid,quankity)
     if(!newProduct) return res.send("Hubo un error en id del carrito o del producto")
     return res.send("se actualizo la cantidad de ejemplares del producto")
 })
