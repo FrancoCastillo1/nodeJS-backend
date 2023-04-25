@@ -1,6 +1,5 @@
-import productClass from "../DAO/factory.js"
+/* import productClass from "../DAO/factory.js"
 const addProducts = async(obj) =>{
-    console.log("imprimo",productClass)
     const instance = new productClass()
     let validate = true
     const array = Object.values(obj)
@@ -23,4 +22,4 @@ const addProducts = async(obj) =>{
    return validate
 }
 
-export default addProducts
+export default addProducts */

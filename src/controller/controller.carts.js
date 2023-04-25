@@ -1,6 +1,7 @@
 import { Router } from "express";
 import __dirname from "../utilis.js";
 import instanceCart from "../DAO/mongo/cart.dao.js";
+import {putAndPostCart,patchProducts} from "../service/cart.service.js"
 
 const cart = Router()
 
@@ -20,21 +21,26 @@ cart.get("/",async(req,res)=>{
     return res.json({payload:get})
 })
 
-cart.post("/:cid/purchase",async(req,res) =>{
+cart.post("/",async(req,res) =>{
+    try{
+        const addToCart = await instanceCart.postCart()
+        return res.status(201).json({message:`se creo el carrito correctamente, el id es ${addToCart._id}`})
+    }catch(err){
+        res.status(500).json({error:"Internal Server Error"})
+    }
 
 })
 
 cart.get("/:cid",async(req,res) =>{
     const {cid} = req.params
    const buscarCart = await instanceCart.getCartById(cid)
-    console.log(buscarCart)
     if(!buscarCart) return  res.status(404).send("No se el id del carrito")
     return res.json({cart:buscarCart})
 })
 cart.put("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
-    const newProduct = await instanceCart.putAndPostCart(cid,pid,quankity)
+    const newProduct = await putAndPostCart(cid,pid,quankity)
     if(!newProduct) return res.status(404).send("Hubo un error en id del carrito o del producto")
     return res.send("se añadio el producto al carrito ")
 })
@@ -42,7 +48,7 @@ cart.put("/:cid/products/:pid",async(req,res) =>{
 cart.patch("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
-    const newProduct = await instanceCart.patchProducts(cid,pid,quankity)
+    const newProduct = await patchProducts(cid,pid,quankity)
     if(!newProduct) return res.send("Hubo un error en id del carrito o del producto")
     return res.send("se actualizo la cantidad de ejemplares del producto")
 })

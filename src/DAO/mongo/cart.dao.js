@@ -11,7 +11,7 @@ class CartManager{
             return cart
 
         }catch(error){
-            return [false,error]
+           throw new Error(error)
         }
     }
     async getCartById(cid){
@@ -33,7 +33,7 @@ class CartManager{
             return false
         } 
     }
-    async putAndPostCart(cid,pid,quankity){
+   /*  async putAndPostCart(cid,pid,quankity){
         try{
             const cart = await Cart.findOne({_id:cid})
             const product = await Products.findOne({_id:pid})
@@ -45,14 +45,23 @@ class CartManager{
             console.log(error)
             return false
         }
+    } */
+    async replazeCart(id,replaze){
+        try{
+            const cart = await Cart.updateOne({_id:id},replaze)
+            return cart
+        }catch(err){
+            throw new Error(err)
+        }
     }
-    async patchProducts(cid,id,cantidad){
+
+    /* async patchProducts(cid,id,cantidad){
         try{
             const put = await Cart.findOne(
                 {_id:cid},
             )
             const filter = put.products.findIndex((item) => item.product == id)
-            if(!filter) return false
+            if(filter == -1) return false
             const obj = put.products[filter]
             obj.quankity = cantidad
             put.products.splice(filter,1,obj)
@@ -63,14 +72,14 @@ class CartManager{
             return false
         }
         
-    }
+    } */
     async deleteCart(cid){
         try{
             const upDate = await Cart.deleteOne({_id:cid})
             console.log(upDate)
             return upDate
         }catch(error){
-           return false
+           throw new Error(error)
         }
     }
     async deleteProduct(cid,pid){

@@ -23,8 +23,6 @@ class ProductManager{
         }catch(error){
             return false
         }
-        
-
     }
     async getProductsId(id){
         try{

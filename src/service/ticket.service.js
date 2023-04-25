@@ -4,35 +4,37 @@ import { v4 as uuidv4 } from 'uuid';
 import TikcetDTO from "../DTOs/Ticket.dto.js";
 import ClassTicket from "../DAO/mongo/ticket.dao.js";
 
-const uuid = uuidv4();
-
 const instanceProducts = new ProductManager()
 const instanceTicket = new ClassTicket()
 
 const postTiket = async(cid) =>{
+    const productosInexistente = []
+
     const cartId = await instanceCart.getCartById(cid)
     const products = await instanceProducts.getProduct()
     if(!cartId) return false
-   const productsCart = cartId.products
-
-    products.map(async(item,i) =>{
-         if(!productsCart[i]) return;
-         if(item.title == productsCart[i].title){
-               item.stock -= productsCart[i].stock
-               if(item.stock < 0) return item._id;
-               await instanceProducts.updateProducts(item._id,"stock",item.stock)
-         }
-    })
-    if(!products) return;
-
-    const code = uuid()
+    const productsCart = cartId.products
+    for(let i =0;i<productsCart.length;i++){
+        const encontrarProduct = products.find((item) => item._id.toString() == productsCart[i].product._id.toString())
+        if(!encontrarProduct || !encontrarProduct.status){
+            console.log("error")
+            productosInexistente.push(productsCart[i].product._id)
+            continue;
+        } 
+        const upDateStock = encontrarProduct.stock - productsCart[i].quankity
+         await instanceProducts.updateProducts(encontrarProduct._id,"stock",upDateStock)
+    }
+    const code = uuidv4();
     const data = new Date()
-    const datosDeLaCompra = `Ticket efectudo el día: ${data.getDate()} del mes ${data.getMonth()} del año ${data.getFullYear()}`
-    const totalCompra = productsCart.reduce((acumm,item) => acumm + item.precio ,0)
+    const datosDeLaCompra = `Ticket efectudo el día: ${data.getDate()} del mes ${data.getMonth() + 1} del año ${data.getFullYear()}`
+    const totalCompra = productsCart.reduce((acumm,item) =>acumm + item.product.price,0)
     try{
-        const dtoTicket = new TikcetDTO(code,data,totalCompra)
+        const dtoTicket = new TikcetDTO(code,datosDeLaCompra,totalCompra)
+        console.log(dtoTicket)
         await instanceTicket.postTicket(dtoTicket)
-        return dtoTicket
+        productosInexistente.length == 0 ?await instanceCart.deleteCart(cartId)
+        : await instanceCart.replazeCart(cartId,productosInexistente)
+        return {...dtoTicket, productosNoProcesado:productosInexistente ?? 0}
     }catch(err){
         throw new Error(err)
     }
