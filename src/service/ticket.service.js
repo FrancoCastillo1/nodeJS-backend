@@ -3,6 +3,8 @@ import ProductManager from "../DAO/mongo/product.dao.js"
 import { v4 as uuidv4 } from 'uuid';
 import TikcetDTO from "../DTOs/Ticket.dto.js";
 import ClassTicket from "../DAO/mongo/ticket.dao.js";
+import CustomError from "../utlis/error/CustomError.js";
+
 
 const instanceProducts = new ProductManager()
 const instanceTicket = new ClassTicket()
@@ -22,7 +24,7 @@ const postTiket = async(cid) =>{
             continue;
         } 
         const upDateStock = encontrarProduct.stock - productsCart[i].quankity
-         await instanceProducts.updateProducts(encontrarProduct._id,"stock",upDateStock)
+        await instanceProducts.updateProducts(encontrarProduct._id,"stock",upDateStock)
     }
     const code = uuidv4();
     const data = new Date()

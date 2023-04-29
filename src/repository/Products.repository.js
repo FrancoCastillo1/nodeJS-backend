@@ -1,11 +1,15 @@
 import ProductDTO from "../DTOs/Product.dto.js"
+import CustomError from "../utlis/error/CustomError.js"
+import { EnumError,EnumNameError } from "../utlis/error/enum.error.js"
+import generateDocument from "../utlis/error/info.error.js"
+
 class ProductsRepository{
     constructor(dao){
         this.dao = dao
     }
     async getProduct(limit,sortP ,page,query){
        try{
-            return this.dao.getProduct(limit,sortP,page,query)
+            return  await this.dao.getProduct(limit,sortP,page,query)
        }catch(err){
             throw new Error(err)
        }
@@ -13,7 +17,7 @@ class ProductsRepository{
 
     async getProductsId(id){
         try{
-            return this.dao.getProductsId(id)
+            return  await this.dao.getProductsId(id)
         }catch(err){
             throw new Error(err)
         }
@@ -34,18 +38,23 @@ class ProductsRepository{
             }
             if(array[i].length < validaciones[i]){
                 validate = false
+                CustomError.createError({
+                    name:EnumNameError.INVALID_CREDENTIALS_PRODUCTS,
+                    cause:generateDocument({cartId,}),
+                    code:EnumError.INVALID_LENGTH_ERROR,
+                })
                 break
             }
         }
         try{
-            return this.dao.addProducts(obj)
+            return  await this.dao.addProducts(obj)
         }catch(error){
             throw new Error(e)
         }
     }
     async updateProducts(pid,update,valueUpDate){
         try{
-           return this.dao.updateProducts(pid,update,valueUpDate)
+           return  await this.dao.updateProducts(pid,update,valueUpDate)
         }catch(e){
             throw new Error(e)
         }

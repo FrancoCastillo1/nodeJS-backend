@@ -7,6 +7,7 @@ import auth from "../controller/controller.auth.js"
 import admin from "../controller/controller.admin.js"
 import session from "../controller/controller.session.js"
 import ticket from "../controller/controller.ticket.js"
+import moking from "../controller/controller.moking.js"
 
 const routes = (app) =>{
    app.use("/",viewsTemplates)
@@ -18,6 +19,7 @@ const routes = (app) =>{
    app.use("/auth",auth)
    app.use("/admin",admin)
    app.use("/ticket",ticket)
+   app.use("/mockingproducts",moking)
    app.use("*" ,(req,res)=>{
       res.status(404).json({error:"Not found"})
    })

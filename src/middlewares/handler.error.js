@@ -1,4 +1,4 @@
-import EnumError from "../utlis/error/enum.error.js"
+import {EnumError} from "../utlis/error/enum.error.js"
 
 const errorHandler = (error,req,res,next) =>{
     console.log(error.cause)

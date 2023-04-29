@@ -1,11 +1,12 @@
-const generateUserErrorInfo = user =>{
+const generateDocument = (...doc) =>{
     return `
     One or more properties were incomplete or not valid
     List of requierd properties
-    firts_name:need to be String, received ${user.first_name}
-    last_name:need to be String, received ${user.last_name}
-    Email:need to be String, received ${user.email}
+    ${typeof doc == "string"?`${item} is no valid because length or dont exist` 
+    :doc.map((item,i) =>{
+      return `${i}) ${item} is no valid because length or dont exist`
+    })}
     `
 }
 
-export default generateUserErrorInfo
+export default generateDocument

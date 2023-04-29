@@ -1,7 +1,11 @@
-const EnumError = {
+export const EnumError = {
     ROUTING_ERROR:1,
     INVALID_TYPES_ERROR:2,
-    DATABASE_ERROR:3
+    DATABASE_ERROR:3,
+    INVALID_LENGTH_ERROR:4,
 }
 
-export default EnumError
+export const EnumNameError = {
+    INVALID_CREDENTIALS_CART:1,
+    INVALID_CREDENTIALS_PRODUCTS:2
+}

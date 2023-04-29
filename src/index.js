@@ -11,9 +11,9 @@ import cookieParser from "cookie-parser";
 import session from "express-session"
 import conectMongo from "./db/mongo.init.js";
 import errorHandler from "./middlewares/handler.error.js";
+import addLogger from "./utlis/loger.js";
 
 const {sessionStore} = config
-
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -22,7 +22,8 @@ app.set("views",__dirname + "/views")
 app.set("view engine", "handlebars")
 app.use(express.static( __dirname + "/public"))
 app.use(cookieParser())
-
+app.use(errorHandler)
+app.use(addLogger)
 app.use(session({
   /* store: MongoStore.create({
     mongoUrl: `mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,

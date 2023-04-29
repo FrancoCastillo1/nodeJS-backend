@@ -7,5 +7,4 @@ const cookieExtractor = req => {
 
     return token
 }
-
 export default cookieExtractor
