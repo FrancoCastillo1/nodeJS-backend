@@ -1,11 +1,12 @@
 import winston from "winston";
 import customLevlesOptions from "../utlis/loggerCustomOptions.utils.js";
-const logger = winston.createLogger({
+
+const loggerP = winston.createLogger({
     levels:customLevlesOptions.levels,
     transports:[
-        new winston.transport.Console({level:"info",format:winston.format.combine(winston.format.colorize({colors:customLevlesOptions.colors}),winston.format.simple())}),
-        new winston.transport.File({filename:"./logs/warnings.log", level:"warning"})
+        new winston.transport.Console({level:["info", "warning", "error", "fatal"],format:winston.format.combine(winston.format.colorize({colors:customLevlesOptions.colors}),winston.format.simple())}),
+        new winston.transport.File({filename:`${process.cwd()}/logs/error.log`, level:["error", "fatal"]})
     ]
 })
 
-export default logger
+export default loggerP

@@ -17,6 +17,7 @@ cart.param("word",(req,res,next,word)=>{ // creamos esto cuando hay mucho parame
 
 cart.get("/",async(req,res)=>{
     let {limit,page,sort,query} = req.query
+    /* req.logger.info("cagamos") */
     const get = await instanceCart.getCart(limit,sort,page,query)
     return res.json({payload:get})
 })

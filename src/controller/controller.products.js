@@ -17,7 +17,7 @@ const {notSession} = barril
 
 products.get("/",/* ,notSession, */async(req,res)=>{
     const {sort,query,limit,page} = req.query
-    const products = await productIntance.getProduct(limit,sort,page,query)
+    const products = await productsService.getProduct(limit,sort,page,query)
     /* const {user} = req.session */
     console.log(user)
     res.render("home.handlebars",{products,user})

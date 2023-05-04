@@ -8,9 +8,9 @@
     "build-amd": "npm run bundle-amd && npm run minify-amd",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "start:local": "nodemon src/app.js --mode local",
-    "start:dev": "nodemon src/app.js --mode developmet",
-    "start:prod": "nodemon src/app.js --mode prod"
+    "start:local": "nodemon src/app.js NODE_ENV=local",
+    "start:dev": "NODE_ENV=developmet  nodemon src/app.js",
+    "start:prod": "NODE_ENV=production nodemon src/app.js"
   },
   "author": "Franco",
   "license": "ISC",

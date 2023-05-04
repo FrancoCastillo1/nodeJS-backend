@@ -3,6 +3,8 @@ import productsService from "../repository/product.index.js"
 import CustomError from "../utlis/error/CustomError.js"
 import { EnumError,EnumNameError } from "../utlis/error/enum.error.js"
 import generateDocument from "../utlis/error/info.error.js"
+import logger from "../logger/factory.js"
+
 
 export async function putAndPostCart(cid,pid,quankity){
     try{
@@ -28,6 +30,7 @@ export async function patchProducts(cid,id,cantidad){
         const cart = await instanceCart.getCartById(cid)
         const filter = cart.products.findIndex((item) => item.product._id == id)
         if(filter == -1 ||!cart){
+            logger.error("hubo un error de validación")
             CustomError.createError({
                 name:EnumNameError.INVALID_CREDENTIALS_CART,
                 cause:generateDocument(cid,id),

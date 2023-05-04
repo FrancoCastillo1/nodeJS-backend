@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 const config = {
+    enviromnet:process.env.NODE_ENV,
     persistence:process.env.PERSIST,
     port: process.env.PORT || 3000, 
     admin:process.env.ADMIN_DB, 
@@ -12,4 +13,5 @@ const config = {
     clientIdGG : process.env.CLIENT_ID_GOOGLE,
     secretJWT : process.env.SECRET_KEY_JWT
 }
+
 export default config

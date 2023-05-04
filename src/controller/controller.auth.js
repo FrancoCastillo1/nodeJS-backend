@@ -27,6 +27,7 @@ const createObjCooke = (req) =>{
 }) */
 
 auth.post("/login",passport.authenticate("login",{failureRedirect:"/faillogin"}),async(req,res)=>{
+    req.logger.info("helo")
     if(!req.user) return res.status(400).json({message:"El correo y la contraseña no coiniden"})
     createObjCooke(req)
     /* console.log("hola ",req.user)

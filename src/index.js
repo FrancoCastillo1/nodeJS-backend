@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session"
 import conectMongo from "./db/mongo.init.js";
 import errorHandler from "./middlewares/handler.error.js";
-import addLogger from "./utlis/loger.js";
+import addLogger from "./middlewares/logger.js";
 
 const {sessionStore} = config
 const app = express();
@@ -37,6 +37,8 @@ app.use(session({
 inicailizePassport()
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(addLogger)
+
 /* app.use({
   bro
 }) */
