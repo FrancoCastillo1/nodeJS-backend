@@ -10,11 +10,13 @@ if(enviromnet == "developmet") console.log("xddd")
 
 switch(enviromnet){ //en este caso traigo el ob  completo, sin que tenga la desicion que .env usar(osea no sirve) solo le estoy copiando al profe
     case "developmet":
-        let loggerD = import("./dev.logger.js")
+        const loggerD = import("./dev.logger.js")
+        console.log("se ejecuto en ",enviromnet)
         logger = loggerD
         break
     case "production":
-        let loggerP = import("./prod.logger.js")
+        const loggerP = import("./prod.logger.js")
+        console.log("se ejecuto en ",enviromnet)
         logger = loggerP
         break
     default:
