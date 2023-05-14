@@ -24,8 +24,6 @@ const authToken = (req,res,next) => {
 const authTokenCookie = (req,res,next) => {
     const token = req.cookie.authToken
     if(!token) return res.status(401).json({error:"not authenticated"})
-    console.log(token)
-
     jwt.verify(token,secretJWT,(error,credentials) =>{
         if(error) return res.status(403).json({error:"not authorized"})
 

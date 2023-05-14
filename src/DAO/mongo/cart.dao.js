@@ -1,5 +1,6 @@
 import Cart from "./models/cart.model.js"
 import Products from "./models/products.model.js"
+import logger from "../../logger/factory.js"
 
 class CartManager{
     constructor(file){
@@ -19,8 +20,8 @@ class CartManager{
             const cartId = await Cart.findOne({_id:cid})
             return cartId
         }catch(error){
-            console.log(error)
-            return false
+            logger.error(error)
+           throw new Error(error)
         }
     }
     async postCart(){
@@ -29,8 +30,8 @@ class CartManager{
             await cartPost.save()
             return cartPost
         }catch(error){
-            console.log(error)
-            return false
+            logger.error(error)
+            throw new Error(error)
         } 
     }
    /*  async putAndPostCart(cid,pid,quankity){
@@ -79,6 +80,7 @@ class CartManager{
             console.log(upDate)
             return upDate
         }catch(error){
+            logger.error(error)
            throw new Error(error)
         }
     }
@@ -91,8 +93,8 @@ class CartManager{
             )
             return cart
         }catch(error){
-            console.log(error)
-            return false
+            logger.error(error)
+            throw new Error(error)
         }
 
     }

@@ -7,7 +7,7 @@ ticket.post("/",async(req,res) =>{
     const {cid} = req.body
     try{
         const postTicket = await postTiket(cid)
-        console.log("aca",postTicket)
+        req.logger("aca",postTicket)
         res.status(201).json({message:postTicket})
     }catch(err){
         res.json({message:"Internal server error"})

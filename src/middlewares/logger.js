@@ -1,9 +1,8 @@
 import logger from "../logger/factory.js"
 
-const addLogger = (req,res,next) => {
-    req.logger = logger
-    logger.info("hello")
-    console.log("este es",logger.info)
+const addLogger = async(req,res,next) => {
+    req.logger = await logger
+   /*  logger.info("hello") */
     next()
 }
 

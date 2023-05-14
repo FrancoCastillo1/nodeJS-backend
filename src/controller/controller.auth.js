@@ -18,39 +18,25 @@ const createObjCooke = (req) =>{
     const token = generateToken(newObj)
     res.cookie("authToken",token) 
 }
-
-/* auth.get("/destroy",(req,res)=>{
-    req.session.destroy(err =>{
-        if(!err) return  res.redirect("/")
-        return res.status(500).send({error:err})
-    })
-}) */
-
 auth.post("/login",passport.authenticate("login",{failureRedirect:"/faillogin"}),async(req,res)=>{
     req.logger.info("helo")
     if(!req.user) return res.status(400).json({message:"El correo y la contraseña no coiniden"})
-    createObjCooke(req)
-    /* console.log("hola ",req.user)
-    req.session.user = req.user */
 
+    createObjCooke(req)
+    
     res.json({status:"success", payload:req.user})
-   /*  const {email,password} = req.body
-    const token = generateToken(email)
-    res.json({token}) */
 })
 
 auth.get("/faillogin",(req,res) =>{
-    console.log("paso por aca")
     res.status(500).json({error:"Failed Login:("})
 })
 
 auth.post("/",passport.authenticate("register",{failureRedirect:"/failregister"}),(req,res)=>{
     try{
-
       return res.status(201).json({message:"regsiter succesfull"})
     }catch(err){
         if(err.code == 11000)return res.json({message:"el usuario ya existe"})
-        return res.status(500).json({error})
+        return res.status(500).json({err})
     }
   
 })

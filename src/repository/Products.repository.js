@@ -1,7 +1,7 @@
 import ProductDTO from "../DTOs/Product.dto.js"
 import CustomError from "../utlis/error/CustomError.js"
 import { EnumError,EnumNameError } from "../utlis/error/enum.error.js"
-import generateDocument from "../utlis/error/info.error.js"
+import {generateDocument} from "../utlis/error/info.error.js"
 
 class ProductsRepository{
     constructor(dao){
@@ -47,7 +47,7 @@ class ProductsRepository{
             }
         }
         try{
-            return  await this.dao.addProducts(obj)
+            return  await this.dao.aÑddProducts(obj)
         }catch(error){
             throw new Error(e)
         }

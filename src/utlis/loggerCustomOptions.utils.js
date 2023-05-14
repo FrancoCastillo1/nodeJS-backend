@@ -10,10 +10,10 @@ const customLevlesOptions = {
     colors:{
         fatal:"red",
         error:"orange",
-        waring:"yellow",
+        warning:"yellow",
         info:"blue",
         http:"green",
-        debug:"grey"
+        debug:"grey",
     }
 }
 

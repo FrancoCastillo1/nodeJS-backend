@@ -21,7 +21,7 @@ class ProductManager{
             })
             return map
         }catch(error){
-            return false
+            throw new Error(error)
         }
     }
     async getProductsId(id){
@@ -29,7 +29,7 @@ class ProductManager{
             const getId = await Products.findOne({_id:id})
             return getId
         }catch(error){
-            return false
+            throw new Error(error)
         }
     }
     async addProducts({title,description,price,thumbails,stock,category,status}){
@@ -37,7 +37,7 @@ class ProductManager{
             const post = await Products.create({title,description,price,thumbails,stock,category,status})
             return post
         }catch(error){
-            return false
+            throw new Error(error)
         }
     }
     async updateProducts(pid,update,valueUpDate){

@@ -1,0 +1,38 @@
+
+{"level":"error","message":"error"}
+{"level":"fatal","message":{"lastName":"naran","user":"mate"}}
+error: error
+error: error
+error: error
+error: error
+error: error
+fatal: [object Object]
+error: error
+fatal: [object Object]
+{"level":"error","message":"error"}
+{"level":"fatal","message":{"lastName":"naran","user":"mate"}}
+{"level":"error","message":"error"}
+{"level":"fatal","message":{"lastName":"naran","user":"mate"}}
+{"level":"error","message":"error"}
+{"level":"fatal","message":{"lastName":"naran","user":"mate"}}
+error: error
+fatal: [object Object]
+error: error
+fatal: [object Object]
+error: 6556
+fatal: [object Object]
+{"level":"error","message":6556}
+{"level":"fatal","message":"[object Object]"}
+{"level":"error","message":6556}
+{"level":"fatal","message":"[object Object]"}
+{"level":"error","message":6556}
+{"level":"fatal","message":"[object Object]"}
+{"level":"error","message":6556}
+{"level":"fatal","message":"[object Object]"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error","message":6556}
+{"level":"fatal","message":"[object Object]"}
+{"level":"error","message":6556}
+{"level":"fatal","message":{"lastName":"naran","user":"mate"}}

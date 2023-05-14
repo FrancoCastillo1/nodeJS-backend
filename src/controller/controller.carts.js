@@ -17,8 +17,8 @@ cart.param("word",(req,res,next,word)=>{ // creamos esto cuando hay mucho parame
 
 cart.get("/",async(req,res)=>{
     let {limit,page,sort,query} = req.query
-    /* req.logger.info("cagamos") */
     const get = await instanceCart.getCart(limit,sort,page,query)
+    req.logger.info("cagamoas")
     return res.json({payload:get})
 })
 
@@ -41,6 +41,7 @@ cart.get("/:cid",async(req,res) =>{
 cart.put("/:cid/products/:pid",async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
+    req.logger.info("pasó la prueba")
     const newProduct = await putAndPostCart(cid,pid,quankity)
     if(!newProduct) return res.status(404).send("Hubo un error en id del carrito o del producto")
     return res.send("se añadio el producto al carrito ")

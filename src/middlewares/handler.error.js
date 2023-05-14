@@ -1,7 +1,8 @@
 import {EnumError} from "../utlis/error/enum.error.js"
+import logger from "../logger/factory.js"
 
 const errorHandler = (error,req,res,next) =>{
-    console.log(error.cause)
+    logger.error(error.cause)
 
     switch(error.code){
         case EnumError.INVALID_TYPES_ERROR:
