@@ -14,8 +14,4 @@ real.post("/",async(req,res)=>{
     if(!agregar) return res.status(403).send("Por favor llena los campos requeridos")
     return res.json({payload:agregar})
 })
-
-const greeting = "Hello word"
-
-console.log(greeting)
 export default real

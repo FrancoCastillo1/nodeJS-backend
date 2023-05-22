@@ -4,7 +4,9 @@ import config from "../config/index.js";
 const {secretJWT} = config
 
 const generateToken = (user) =>{
-    const token = jwt.sign({user,},secretJWT,{expiresIn:"60s"})
+
+    const token = jwt.sign(user,secretJWT,{expiresIn:"5m"})
+    console.log(token)
     return token
 }
 
@@ -22,7 +24,7 @@ const authToken = (req,res,next) => {
 }
 
 const authTokenCookie = (req,res,next) => {
-    const token = req.cookie.authToken
+    const token = req.cookie?.authToken 
     if(!token) return res.status(401).json({error:"not authenticated"})
     jwt.verify(token,secretJWT,(error,credentials) =>{
         if(error) return res.status(403).json({error:"not authorized"})

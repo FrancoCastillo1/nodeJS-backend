@@ -5,14 +5,9 @@ class UserClass{
     async getUser(obj){
         try{
             const get = await User.findOne(obj)
-            let newUser = {
-                firtsName : get.firts_name,
-                lastName : get.last_name,
-                email: get.email
-            }
-            return newUser
+            return get
         }catch(e){
-            return false
+            throw new Error(e)
         }
     }
     async postUser(obj){
@@ -24,6 +19,17 @@ class UserClass{
         }catch(e){
            if(e.code == 1100) return;
             return false
+        }
+    }
+
+    async patchUser(id,objUpdate){
+        try{
+            const cambiarValor = await User.updateOne(
+               { _id:id},
+               {$set:objUpdate})
+            return cambiarValor
+        }catch(err){
+            throw new Error(err)
         }
     }
 }

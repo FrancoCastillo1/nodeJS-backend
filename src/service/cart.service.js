@@ -4,21 +4,31 @@ import CustomError from "../utlis/error/CustomError.js"
 import { EnumError,EnumNameError } from "../utlis/error/enum.error.js"
 import {generateDocument,repetedDoc} from "../utlis/error/info.error.js"
 import logger from "../logger/factory.js"
+import UserClass from "../DAO/mongo/user.dao.js"
 
+const instanceUser = new UserClass()
 
-export async function putAndPostCart(cid,pid,quankity){
+export async function putAndPostCart(cid,pid,quankity,email){
     try{
+        const user = await instanceUser.getUser({email,})
+        if(user.rol == "premium"){
+            const creadorId = creator.id
+            const products = await productsService.getProduct({[creadorId]:user._id.toString()})
+            const filterProduct = products.find(item => item._id.toString() == pid)
+            if(filterProduct) return ["no puedes añadir productos tuyos",false,403]
+        }
         const cartId = await instanceCart.getCartById(cid)
         const product = await productsService.getProductsId(pid)
         const idMongoString = product._id.toString() 
-        const verCantidad = cartId.products(item => item.quankity == quankity && item.id == idMongoString)
+        const verCantidad = cartId.products.find(item => item.quankity == quankity && item.id == idMongoString)
         if(verCantidad){
             logger.warning("Se repitió la cantidad")
-            CustomError.createError({
+             CustomError.createError({
                 name:EnumNameError.REPETED_VALUE,
                 cause:repetedDoc(quankity),
                 code:EnumError.REPETED_VALUE_DB_ERROR,
             })
+            return ["No puedes añadir la misma cantidad",false,409]
         }
         if(!product || !cartId){
             logger.warning("Hubo un error en el id del producto o del carrito");
@@ -27,6 +37,7 @@ export async function putAndPostCart(cid,pid,quankity){
                 cause:generateDocument(cartId),
                 code:EnumError.INVALID_TYPES_ERROR,
             })
+            return ["no existe el producto o el carrito",false,404]
         } 
         cartId.products.push({product:pid,quankity})
         logger.info("cantidad actualizada","sss")
@@ -48,8 +59,10 @@ export async function patchProducts(cid,id,cantidad){
                 cause:generateDocument(cid,id),
                 code:EnumError.INVALID_TYPES_ERROR,
             })
+            return ["no existe el producto o el carrito",false,404]
         } 
         const obj = cart.products[filter]
+        if(obj.quankity == cantidad) return ["No puedes añadir la misma cantidad",false,409]
         obj.quankity = cantidad
         cart.products.splice(filter,1,obj)
         req.logger.info(cart)

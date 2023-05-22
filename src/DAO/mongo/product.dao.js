@@ -26,12 +26,21 @@ class ProductManager{
     }
     async getProductsId(id){
         try{
-            const getId = await Products.findOne({_id:id})
+            const getId = await Products.findById(id)
             return getId
         }catch(error){
             throw new Error(error)
         }
     }
+    async getProductByKey(key,value){
+        try{
+            const getByKey = await Products.findOne({[key]:value})
+            return getByKey
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+
     async addProducts({title,description,price,thumbails,stock,category,status}){
         try{
             const post = await Products.create({title,description,price,thumbails,stock,category,status})
@@ -50,6 +59,14 @@ class ProductManager{
             return put
         }catch(e){
             throw new Error(e)
+        }
+    }
+    async deleteProductsId(pid){
+        try{
+            const deleteProduct = await Products.deleteOne({_id:pid})
+            return deleteProduct
+        }catch(err){
+            throw new Error(err)
         }
     }
 }

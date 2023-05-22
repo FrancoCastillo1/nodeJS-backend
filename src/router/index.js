@@ -9,16 +9,20 @@ import session from "../controller/controller.session.js"
 import ticket from "../controller/controller.ticket.js"
 import moking from "../controller/controller.moking.js"
 import logger from "../controller/controller.logger.js"
+import users from "../controller/controller.users.js"
 
+import passportCall from "../utlis/passportCallback.js"
 
 const routes = (app) =>{
    app.use("/",viewsTemplates)
+   app.use("/auth",auth)
+   app.use(passportCall("current")),
    app.use("/api/products", products)
    app.use("/api/cart",cart)
+   app.use("/api/users",users)
    app.use("/api/sessions",session)
    app.use("/realtimeproducts",real)
    app.use("/messages",message)
-   app.use("/auth",auth)
    app.use("/admin",admin)
    app.use("/ticket",ticket)
    app.use("/mockingproducts",moking)

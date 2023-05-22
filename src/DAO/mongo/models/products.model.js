@@ -13,6 +13,7 @@ const productsSchema = new mongoose.Schema({
         index:true
     },
     stock:Number,
+    category:String,
     thumbail:{
         type:String,
         default:"Sin imagen"
@@ -21,7 +22,14 @@ const productsSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    category:String,
+    creator:{
+       id:{type:mongoose.Schema.Types.ObjectId},
+        owner:{
+            type:String,
+            enum:["premium","admin"],
+            default:"admin"
+        }
+    },
 })
 productsSchema.plugin(mongoosePaginate)
 const Products = mongoose.model(productsColection,productsSchema)

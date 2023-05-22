@@ -1,8 +1,9 @@
+import fetchDataShared from "./shared/fetch.js"
+
 const form = document.querySelector("#inputR")
-console.log(form)
+
 
  form.addEventListener("submit",async(e)=>{
-    console.log("is",form)
     e.preventDefault()
     const data = new FormData(form)
     const obj = {}
@@ -14,11 +15,11 @@ console.log(form)
     }
     const method = "POST"
     const body = JSON.stringify(obj)
-    const post = await fetch(url,{
-        headers,
-        method,
-        body,
-    })
-    const json = await post.json()
-    console.log(json)
+    console.log("xddd")
+    try{
+        const fetch = await fetchDataShared(url,headers,method,body)
+        return await fetch.json()
+    }catch(err){
+        return err
+    }
 })

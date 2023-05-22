@@ -2,6 +2,8 @@ import { Router } from "express";
 import passport from "passport";
 import UserClass from "../DAO/mongo/user.dao.js";
 import {generateToken} from "../utlis/jwt.utilis.js"
+import {sendMailForNewPassword} from "../service/mail.service.js"
+import {corroboratePassword} from "../service/auth.service.js"
 /* import { generateToken } from "../utlis/jwt.utilis.js"; */
 
 const auth = Router()
@@ -33,7 +35,8 @@ auth.get("/faillogin",(req,res) =>{
 
 auth.post("/",passport.authenticate("register",{failureRedirect:"/failregister"}),(req,res)=>{
     try{
-      return res.status(201).json({message:"regsiter succesfull"})
+      console.log("xddd")
+      return res.status(201).json({message:"register succesfull"})
     }catch(err){
         if(err.code == 11000)return res.json({message:"el usuario ya existe"})
         return res.status(500).json({err})
@@ -41,8 +44,38 @@ auth.post("/",passport.authenticate("register",{failureRedirect:"/failregister"}
   
 })
 
+/* auth.get("/restorepasswordrender",(req,res)=>{
+    console.log("xd")
+    res.render("introducirCorreo.handlebars")
+}) */
+
 auth.get("/failregister",(req,res)=>{
     res.status(500).message({message:"failed register"})
+})
+
+auth.post("/sendmailforpassword",async(req,res)=>{
+    const {emailforPassword} = req.body
+    console.log("a",emailforPassword, req.body)
+    try{
+        const postNewPassword = await sendMailForNewPassword(emailforPassword)
+        res.status(200).json({message:"Se ha enviado el correo de recuperación",status:200})
+    }catch(err){
+        res.status(500).json({message:err})
+    }
+})
+
+auth.patch("/restorepassword",async(req,res)=>{
+    const {email,newPassword,repeatPassword} = req.body
+    try{
+        const corroborate = await corroboratePassword(email,newPassword,repeatPassword)
+
+        corroborate[1] == undefined &&(corroborate[1] = true)
+
+        if(!corroborate[1]) return res.status(corroborate[2]).json({message:corroborate[0]})
+        res.status(201).json({message:"Se cambio la contraseña correctamente"})  
+    }catch(err){
+        res.status(500).json({message:err})
+    }
 })
 
 auth.get("/github",passport.authenticate("github",{scope:[`user:email`]}),async(req,res)=>{})

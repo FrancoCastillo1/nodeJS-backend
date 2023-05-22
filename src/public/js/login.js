@@ -1,18 +1,6 @@
-const form = document.querySelector(".formL")
+import fetchDataShared from "./shared/fetch.js"
 
-async function fetchF(url,headers,method,body){
-    try{
-        const get = await fetch(url,{
-            headers,
-            method,
-            body,
-        })
-        const json = await get.json()
-        return json
-    }catch(e){
-       return e
-    }
-}
+const form = document.querySelector(".formL")
 
 form.addEventListener("submit",async(e)=>{
     e.preventDefault()
@@ -27,5 +15,11 @@ form.addEventListener("submit",async(e)=>{
     }
     const method = "POST"
     const body = JSON.stringify(obj)
-    await fetchF(url,headers,method,body)
+
+    try{
+        const fetch = await fetchDataShared(url,headers,method,body)
+        return await fetch.json()
+    }catch(err){
+        return err
+    }
 })

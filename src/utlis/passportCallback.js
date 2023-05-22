@@ -6,7 +6,7 @@ const passportCall = strategy =>{
         passport.authenticate(strategy,(err,user,info) =>{
             if(err) return next(err)
             if(!user){
-                return res.status(401).json({error: info.messages ? info.messages : info.toString()})
+                return res.status(401).json({error: info.messages ??  info.toString()})
             }
             req.user = user
             next()

@@ -7,11 +7,19 @@ const viewsTemplates = Router()
 
 /* const {sessionExist,notSession} = barril */
 
+viewsTemplates.get("/createnewpassword",(req,res)=>{
+    res.render("restablecer.handlebars")
+})
+
+viewsTemplates.get("/restorepasswordrender",(req,res)=>{
+    res.render("introducirCorreo.handlebars")
+})
+
 viewsTemplates.get("/"/* sessionExist, */,(req,res) =>{
     res.render("login.handlebars")
 })
 
-viewsTemplates.get("/register"/* ,sessionExist */,(req,res)=>{
+viewsTemplates.get("/register",(req,res)=>{
     res.render("register.handlebars")
 })
 

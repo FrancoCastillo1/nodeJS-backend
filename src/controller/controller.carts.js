@@ -2,6 +2,9 @@ import { Router } from "express";
 import __dirname from "../utilis.js";
 import instanceCart from "../DAO/mongo/cart.dao.js";
 import {putAndPostCart,patchProducts} from "../service/cart.service.js"
+import {seeIdCart} from "../middlewares/cart.middleware.js" 
+import passportCall from "../utlis/passportCallback.js";
+import authorizationJWT from "../middlewares/authorization.jwt.js";
 
 const cart = Router()
 
@@ -15,7 +18,7 @@ cart.param("word",(req,res,next,word)=>{ // creamos esto cuando hay mucho parame
     next() // refactorizar o borrar luego
 })
 
-cart.get("/",async(req,res)=>{
+cart.get("/",passportCall("current"),authorizationJWT("admin"),async(req,res)=>{
     let {limit,page,sort,query} = req.query
     const get = await instanceCart.getCart(limit,sort,page,query)
     req.logger.info("cagamoas")
@@ -32,40 +35,50 @@ cart.post("/",async(req,res) =>{
 
 })
 
-cart.get("/:cid",async(req,res) =>{
+cart.get("/:cid",seeIdCart,async(req,res) =>{
     const {cid} = req.params
    const buscarCart = await instanceCart.getCartById(cid)
     if(!buscarCart) return  res.status(404).send("No se el id del carrito")
     return res.json({cart:buscarCart})
 })
-cart.put("/:cid/products/:pid",async(req,res) =>{
+cart.put("/:cid/products/:pid",seeIdCart,async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
     req.logger.info("pasó la prueba")
-    const newProduct = await putAndPostCart(cid,pid,quankity)
-    if(!newProduct) return res.status(404).send("Hubo un error en id del carrito o del producto")
-    return res.send("se añadio el producto al carrito ")
+    try{
+        const newProduct = await putAndPostCart(cid,pid,quankity)
+        newProduct[1] == undefined && (newProduct[1] = true)
+        if(!newProduct[1]) return res.status(newProduct[2]).json({message:newProduct[0]})
+        return res.json({message:"Se añadio el producto al carrito"})
+    }catch(err){
+        res.status(500).json({message:err})
+    }
 })
 
-cart.patch("/:cid/products/:pid",async(req,res) =>{
+cart.patch("/:cid/products/:pid",seeIdCart,async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
-    const newProduct = await patchProducts(cid,pid,quankity)
-    if(!newProduct) return res.send("Hubo un error en id del carrito o del producto")
-    return res.send("se actualizo la cantidad de ejemplares del producto")
+    try{
+        const newProduct = await patchProducts(cid,pid,quankity)
+        newProduct[1] == undefined &&(newProduct[1] = true)
+        if(!newProduct[1]) return res.status(newProduct[2]).json({message:newProduct[0]})
+        return res.json({message:"Se actualizo la cantidad del producto"})
+
+    }catch(err){
+        res.status(500).json({message:err})
+    }
 })
 
-cart.delete("/:cid/products/:pid",async(req,res)=>{
+cart.delete("/:cid/products/:pid",seeIdCart,async(req,res)=>{
     const {cid,pid} = req.params
     const deleteP = await instanceCart.deleteProduct(cid,pid)
     if(!deleteP) return res.status(404).send("Hubo un error en id del carrito o del producto")
     return res.send("se elimino el producto correctamente")
 })
 
-cart.delete("/:cid",async(req,res)=>{
+cart.delete("/:cid",seeIdCart,async(req,res)=>{
     const {cid} = req.params
     const deleteC = await instanceCart.deleteCart(cid)
-    console.log("hola  ",deleteC)
     if(!deleteC) return res.status(404).send("No existe el id del carrito")
     res.send("se elimino el carrito ")
 })
