@@ -1,0 +1,156 @@
+paths:
+  /api/cart: 
+    get:
+      summary: "Filtrar carrito por query o obtener todos por defecto"
+      tags:
+        - "Cart"
+      parameters:
+        - in: query 
+          name: query 
+          description: query del carrito (opcional)
+          schema:
+            type: string
+            example: category=Ropa
+        - in: query
+          name: sort
+          description: Ordena los carrito de decendente a ascendente (opcional)
+          schema: 
+            type: string
+            example: sort=-1
+        - in: query
+          name: limit
+          description: Limita la cantidad de carritos (opcional)
+          schema:
+            type: string
+            example: limit=6
+        - in: query
+          name: page
+          description: Página del carrito según los limites establecidos (opcional)
+          schema:
+            type: string
+            example: page=2
+      
+      responses:
+        "200":
+          description: "Los carritos fueron entregados"
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Cart" 
+        "401":
+          description: No estás autenticado
+        "403":
+          description: No estás autorizado
+    post:
+      summary: Crear el carrito vacio
+      tags: 
+        - "Cart"
+      responses:
+        "201":
+          description: Se creo el carrito con exito
+  
+  /api/cart/{:cid}: 
+    get: 
+      summary: Solicitar carrito por id
+      tags: 
+        - "Cart"
+      parameters:
+        - in: paths
+          name: cid
+          description: Id del carrito 
+          schema: 
+            type: string
+      responses: 
+        "200":
+          description: El carrito si existe
+        "404":
+          description: No existe el id del carrito
+    delete: 
+      summary: Eliminar carrito por id
+      tags:
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          description: Id del carrito 
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: Se elimino el carrito correctamente
+        "403":
+          description: No podes eliminar carritos de otras personas o nos admin
+        "404":
+          description: No se encontró el carrito
+  api/cart/{:cid}/products/{:pid}:
+    put:
+      summary: Agrega productos al carrito
+      tags:
+        - "Cart"
+      parameters:
+        - in: paths
+          name: cid
+          description: Id del carrito 
+          schema: 
+            type: string
+        - in: paths
+          name: pid
+          description: Id del prodcuto
+          schema: 
+            type: string
+          responses:
+            "200":
+              description: Se agregó el producto al carrito
+            "403":
+              description: No sos  admin o no podés añadir prodcutos que no son tuyos
+            "404":
+              description: No existe o el producto o el carrito
+            "409":
+              description: No podés añadir la misma cantidad ya existente
+    patch:
+      summary: Actualiza la cantidad del producto en el carrito
+      tags: 
+        - "Cart"
+      parameters:
+        - in: paths
+          name: cid
+          description: Id del carrito 
+          schema: 
+            type: string
+        - in: paths
+          name: pid
+          description: Id del prodcuto
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: Se actualizo la cantidad correctamente
+        "403":
+          description: No sos admin o no podés actualizar la cantidad de productos de carritos que no son tuyos
+        "404":
+          description: No existe o el producto o el carrito
+        "409":
+          description: No podés añadir la misma cantidad
+    delete: 
+      summary: Eliminar el producto del carrito
+      tags:
+        - "Cart"
+      parameters:
+        - in: paths
+          name: cid
+          description: Id del carrito 
+          schema: 
+            type: string
+        - in: paths
+          name: pid
+          description: Id del prodcuto
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: Se elimino correctamente el carrito
+        "403":
+          description: No sos admin o no podés eliminar productos de carritos que no son tuyos
+        "404":
+          description: No existe o el producto o el carrito 

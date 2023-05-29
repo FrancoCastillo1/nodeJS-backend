@@ -1,0 +1,64 @@
+components: 
+  schemas: 
+    Products: 
+      type: object 
+      properties:
+        _id: 
+          type: string
+          description: Object Id de mongo 
+        title: 
+          type: string,
+          description: Nombre del producto
+        description: 
+          type: string,
+          description: Descripcion del producto
+        price: 
+          type: number,
+          description: Precio del producto
+        stock: 
+          type: number,
+          description: Stock del producto
+        category: 
+          type: string,
+          description: Categoria del producto
+        status: 
+          type: boolean,
+          description: Estatus del producto
+        creator:
+          id: Id referenciado al usuario creador del productos
+          owner: Rol del creador del producto
+      example:
+        _id: ObjectId(34334dadasdads")
+        title: Remera
+        description: Remera manga larga adidas
+        price: 253 
+        stock: 23
+        category: Ropa
+        status: true
+        creator:
+          id: 656565674576
+          owner: "admin"
+    NewProductRequestBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        stock:
+          type: integer
+        status:
+          type: boolean
+        category:
+          type: string
+        thumbnails:
+          type: string
+    UpdateProductRequestBody:
+      type: object
+      properties:
+        actualizar:
+          type: string
+        info:
+          type: string/number/bool etc

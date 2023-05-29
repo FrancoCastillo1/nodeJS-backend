@@ -20,9 +20,12 @@ cart.param("word",(req,res,next,word)=>{ // creamos esto cuando hay mucho parame
 
 cart.get("/",passportCall("current"),authorizationJWT("admin"),async(req,res)=>{
     let {limit,page,sort,query} = req.query
-    const get = await instanceCart.getCart(limit,sort,page,query)
-    req.logger.info("cagamoas")
-    return res.json({payload:get})
+    try{
+        const get = await instanceCart.getCart(limit,sort,page,query)
+        return res.json({payload:get})
+    }catch(err){
+        res.json({message:err})
+    }
 })
 
 cart.post("/",async(req,res) =>{
@@ -37,9 +40,13 @@ cart.post("/",async(req,res) =>{
 
 cart.get("/:cid",seeIdCart,async(req,res) =>{
     const {cid} = req.params
-   const buscarCart = await instanceCart.getCartById(cid)
-    if(!buscarCart) return  res.status(404).send("No se el id del carrito")
-    return res.json({cart:buscarCart})
+    try{
+        const buscarCart = await instanceCart.getCartById(cid)
+         if(!buscarCart) return  res.status(404).send("No se el id del carrito")
+         return res.json({cart:buscarCart})
+    }catch(err){
+        res.json({message:err})
+    }
 })
 cart.put("/:cid/products/:pid",seeIdCart,async(req,res) =>{
     const {cid,pid} = req.params

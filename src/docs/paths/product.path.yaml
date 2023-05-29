@@ -1,0 +1,132 @@
+paths:
+  /api/products:
+    get:
+      summary: Solicitar los productos por query o todos los productos
+      tags:
+        - "Productos"
+      parameters: 
+        - in: query 
+          name: query 
+          description: query del del producto (opcional)
+          schema:
+            type: string
+            example: category=Ropa
+        - in: query
+          name: sort
+          description: Ordena los productos de decendente a ascendente (opcional)
+          schema: 
+            type: string
+            example: sort=-1
+        - in: query
+          name: limit
+          description: Limita la cantidad de productos (opcional)
+          schema:
+            type: string
+            example: limit=5
+        - in: query
+          name: page
+          description: Página del producto según los limites establecidos (opcional)
+          schema:
+            type: string
+            example: page=2
+      
+      responses:
+        "200":
+          description: Los productos de la query o todos los productos fueron obtenidos
+          content:
+            application/json: 
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Products"
+    post:
+      summary: Agregar un nuevo producto
+      tags:
+        - "Productos"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewProductRequestBody"
+      responses:
+        "201":
+          description: El producto fue agregado correctamente
+        "403":
+          description: No tenés rango premium o admin o tu status es "false" para agregar el producto
+        "400":
+          description: El valor del producto no cumple con la longitud minima
+          example: title:Remera ---> no te dejará añadirlo debido a su longitud 
+        "500":
+          description: Error al agregar el producto
+    
+  /api/products/{id}:
+    get:
+      summary: Obtener un producto por su ID
+      tags:
+        - "Productos"
+      parameters:
+        - in: path
+          name: id
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+          example: 63ed5a9f9a2034864b9b67e5
+      responses:
+        "200":
+          description: El producto fue obtenido con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Products"
+        "404":
+          description: El producto con el ID especificado no existe en la base de datos
+    delete:
+      summary: Eliminar un producto por su ID
+      tags:
+        - "Productos"
+      parameters:
+        - in: path
+          name: id
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+          example: 637823h2g3htg12uy33hk35
+      responses:
+        "200":
+          description: El producto fue eliminado satisfactoriamente
+        "403":
+          description: El producto a eliminar no es tuyo o no tenes permisos
+        "404":
+          description: El producto con el ID especificado no existe en la base de datos
+
+    patch:
+      summary: Actualizar un producto por su ID
+      tags:
+        - "Productos"
+      parameters:
+        - in: path
+          name: id
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UpdateProductRequestBody"
+      responses:
+        "200":
+          description: El producto fue actualizado con éxito
+        "403":
+          description: El producto no es tuyo o no tenés los permisos suficinetes
+        "404":
+          description: El producto con el ID especificado no existe en la base de datos

@@ -3,6 +3,7 @@ import CustomError from "../utlis/error/CustomError.js"
 import { EnumError,EnumNameError } from "../utlis/error/enum.error.js"
 import {generateDocument} from "../utlis/error/info.error.js"
 import UserClass from "../DAO/mongo/user.dao.js"
+import mongoose from "mongoose"
 
 class ProductsRepository{
     constructor(dao){
@@ -11,15 +12,18 @@ class ProductsRepository{
     }
     async getProduct(limit,sortP ,page,query){
        try{
-            return  await this.dao.getProduct(limit,sortP,page,query)
+        if (limit || sortP || page || typeof query == "object") return await this.dao.getProductByQuery(limit,sortP,page,query)
+        return await this.dao.getProducts()
        }catch(err){
             throw new Error(err)
        }
     }
 
-    async getProductsId(id){
+    async getProductsId(pid){
         try{
-            return  await this.dao.getProductsId(id)
+            const id = mongoose.Types.ObjectId(pid)
+            console.log(id)
+          return  await this.dao.getProductsId(id)
         }catch(err){
             throw new Error(err)
         }
@@ -38,6 +42,7 @@ class ProductsRepository{
 
     async addProducts(obj,email){
         let validate = true
+        console.log("parece que la wea funciona")
         try{
             const userMail = await this.user.getUser({email,})
             if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes crear productos si sos usuario",false,403]
@@ -46,30 +51,42 @@ class ProductsRepository{
             obj.creator.owner = userMail.rol
 
             const productDto = new ProductDTO(obj)
-            const array = Object.values(productDto)
+            const arrayValues = Object.values(productDto)
+            const arrayKeys = Object.keys(productDto)
 
-            if(array.at(-1) == false) return ["El estatus del producto no existe",false,403];
-            array.length = 5
+            if(arrayValues.at(-1) == false) return ["El estatus del producto no existe",false,403];
+
+            arrayValues.length = 5
+            arrayKeys.length = 5
 
             const validaciones = [5,13,1,1,4]
-        
-        
-            for(let i =0;i<array.length;i++){
-                if(typeof array[i] == "number"){
-                    let string = array[i].toString()
-                    array[i] = string
+            const arrayValidaciones = []
+            
+            for(let i =0;i<arrayValues.length;i++){
+                if(typeof arrayValues[i] == "number"){
+                    let string = arrayValues[i].toString()
+                    arrayValues[i] = string
                 }
-                if(array[i].length < validaciones[i]){
-                    validate = false
+                if(arrayValues[i].length < validaciones[i]){
+                    validate && (validate = false)
+                    arrayValidaciones.push({propiedad:arrayKeys[i],valor:arrayValues[i],longitudMinima:validaciones[i]})
                     CustomError.createError({
                         name:EnumNameError.INVALID_CREDENTIALS_PRODUCTS,
                         cause:generateDocument({cartId,}),
                         code:EnumError.INVALID_LENGTH_ERROR,
                     })
-                    break
                 }
             }
-        return  await this.dao.addProducts(productDto)
+
+            let propertiesNotTestString;
+             arrayValidaciones.forEach(item =>{
+                propertiesNotTestString += `
+                La propiedad ${item.propiedad} cuyo valor ${item.valor} no cumple con los ${item.longitudMinima} caráteres minimos establecidos\n`
+            })
+
+            if(!validate) return [`Se debe cumplir con la longitud minima para continuar:${propertiesNotTestString}`,false,400]
+
+            return  await this.dao.addProducts(productDto)
         }catch(error){
             throw new Error(e)
         }
@@ -83,13 +100,12 @@ class ProductsRepository{
     }
    async deleteProductsById(pid,email){
     const productId = await this.getProductsId(pid)
-    const userMail = await this.user.getUser({email,})
+    const userMail = await this.user.getUser({email,}) /*recuerda hacer un middleware de esto con upDate */
 
     if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes eliminar productos si sos usuario",false,403]
     if(!productId) return ["No existe el producto",false,404]
 
     if(productId.creator.id.toString() !== userMail._id.toString() && userMail.rol !== "admin") return ["No podes eliminar productos que no son tuyos",false,403]
-
 
     try{
         return await this.dao.deleteProductsId(pid)

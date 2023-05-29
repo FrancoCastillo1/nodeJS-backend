@@ -1,0 +1,47 @@
+components:
+  schemas: 
+    Cart:
+      type: object
+      properties:
+        email: 
+          type: string
+          description: Email del usuario asociado
+        products:
+          type: array
+          items:
+            type: object 
+            properties:
+              _id: 
+                type: string
+                description: Object Id de mongo 
+              title: 
+                type: string,
+                description: Nombre del producto
+              description: 
+                type: string,
+                description: Descripcion del producto
+              price: 
+                type: number,
+                description: Precio del producto
+              stock: 
+                type: number,
+                description: Stock del producto
+              category: 
+                type: string,
+                description: Categoria del producto
+              status: 
+                type: boolean,
+                description: Estatus del producto    
+      example:
+        email: morganfreeman@gmail.com
+        products:
+          _id: ObjectId(34334dadasdads")
+          title: Remera
+          description: Remera manga larga adidas
+          price: 253 
+          stock: 23
+          category: Ropa
+          status: true
+          creator:
+            id: 656565674576
+            owner: "admin"

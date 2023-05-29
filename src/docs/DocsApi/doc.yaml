@@ -1,0 +1,11 @@
+openapi: "3.0.1"
+info:
+  title: API PRODUCTS
+  version: "1.0"
+paths:
+ !include ../paths/product.path.yaml
+   !include ../paths/cart.path.yaml
+
+components: 
+  !include ../components/product.yaml
+  !include ../components/cart.yaml

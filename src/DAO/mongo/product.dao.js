@@ -2,17 +2,9 @@ import Products from "./models/products.model.js";
 import mongoose from "mongoose";
 import fs from "fs/promises"
 class ProductManager{
-    async getProduct(limit,sortP ,page,query){
+    
+    async getProducts(){
         try{
-           if (limit || sortP || page || query) {
-                const get = await Products.paginate(query ?? {}, {limit,page, sort: { date: sortP ?? -1 }, });
-                const map = get.docs.map((item) => {
-                return {
-                ...item._doc,
-                };
-             });
-              return map;
-            }
             const products = await Products.find()
             const map = products.map(item=>{
                 return{
@@ -20,18 +12,34 @@ class ProductManager{
                 }
             })
             return map
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+
+    async getProductByQuery(limit,sortP ,page,query){
+        try{
+            const get = await Products.paginate(query ?? {}, {limit,page, sort: { date: sortP ?? -1 }, });
+            const map = get.docs.map((item) => {
+                return {
+                ...item._doc,
+                };
+             });
+            return map;
         }catch(error){
             throw new Error(error)
         }
     }
+
     async getProductsId(id){
         try{
-            const getId = await Products.findById(id)
+            const getId = await Products.findById({_id:id})
             return getId
         }catch(error){
             throw new Error(error)
         }
     }
+
     async getProductByKey(key,value){
         try{
             const getByKey = await Products.findOne({[key]:value})
@@ -49,6 +57,7 @@ class ProductManager{
             throw new Error(error)
         }
     }
+
     async updateProducts(pid,update,valueUpDate){
         try{
             const idMonngo = mongoose.Types.ObjectId(pid);
@@ -61,6 +70,7 @@ class ProductManager{
             throw new Error(e)
         }
     }
+
     async deleteProductsId(pid){
         try{
             const deleteProduct = await Products.deleteOne({_id:pid})

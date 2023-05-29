@@ -20,6 +20,17 @@ export async function putAndPostCart(cid,pid,quankity,email){
         const cartId = await instanceCart.getCartById(cid)
         const product = await productsService.getProductsId(pid)
         const idMongoString = product._id.toString() 
+
+        if(!product || !cartId){
+            logger.warning("Hubo un error en el id del producto o del carrito");
+            CustomError.createError({
+                name:EnumNameError.INVALID_CREDENTIALS_CART,
+                cause:generateDocument(cartId),
+                code:EnumError.INVALID_TYPES_ERROR,
+            })
+            return ["no existe el producto o el carrito",false,404]
+        } 
+        
         const verCantidad = cartId.products.find(item => item.quankity == quankity && item.id == idMongoString)
         if(verCantidad){
             logger.warning("Se repitió la cantidad")
@@ -30,15 +41,6 @@ export async function putAndPostCart(cid,pid,quankity,email){
             })
             return ["No puedes añadir la misma cantidad",false,409]
         }
-        if(!product || !cartId){
-            logger.warning("Hubo un error en el id del producto o del carrito");
-            CustomError.createError({
-                name:EnumNameError.INVALID_CREDENTIALS_CART,
-                cause:generateDocument(cartId),
-                code:EnumError.INVALID_TYPES_ERROR,
-            })
-            return ["no existe el producto o el carrito",false,404]
-        } 
         cartId.products.push({product:pid,quankity})
         logger.info("cantidad actualizada","sss")
         return  await instanceCart.replazeCart(cartId._id,cartId)
