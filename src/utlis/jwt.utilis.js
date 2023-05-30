@@ -4,8 +4,7 @@ import config from "../config/index.js";
 const {secretJWT} = config
 
 const generateToken = (user) =>{
-
-    const token = jwt.sign(user,secretJWT,{expiresIn:"5m"})
+    const token = jwt.sign(user,secretJWT,{expiresIn:"20m"})
     console.log(token)
     return token
 }

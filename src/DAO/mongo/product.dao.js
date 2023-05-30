@@ -11,6 +11,7 @@ class ProductManager{
                     ...item._doc
                 }
             })
+            console.log("thisa",map)
             return map
         }catch(err){
             throw new Error(err)
@@ -64,7 +65,9 @@ class ProductManager{
             const put = await Products.updateOne(
                 {_id:idMonngo},
                 {$set:{[update]:valueUpDate}},
+                {new:true}
                 )
+            console.log("asd",put)
             return put
         }catch(e){
             throw new Error(e)

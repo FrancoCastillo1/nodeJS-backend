@@ -10,12 +10,12 @@ const auth = Router()
 const instanceUser = new UserClass()
 
 const createObjCooke = (req) =>{
-    console.log(req)
     const newObj = {
-        firts_name:req.firts_name,
-        last_name:req.last_name,
-        email:req.email ?? "",
-        googleId:req.googleId ?? "",
+        firts_name:req.user.firts_name,
+        last_name:req.user.last_name,
+        email:req.user.email ?? "",
+        googleId:req.user.googleId ?? "",
+        rol:req.user.rol
     }
     const token = generateToken(newObj)
     res.cookie("authToken",token) 
@@ -88,11 +88,13 @@ auth.get("/githubcallback",passport.authenticate("github",{failureRedirect:"/fai
 auth.get("/google",passport.authenticate("google",{scope:["profile"]}),async(req,res)=>{})
 
 auth.get("/google/callback",passport.authenticate("google",{failureRedirect:"/"}),async(req,res) =>{
+    console.log("holamudno",req.user,req.firts_name)
    try{
         const newObj = {
-            firts_name:req.firts_name,
-            last_name:req.last_name,
-            googleId:req.googleId,
+            firts_name:req.user.firts_name,
+            last_name:req.user.last_name,
+            googleId:req.user.googleId,
+            rol:req.user.rol,
         }
         const token = generateToken(newObj)
         res.cookie("authToken",token) 

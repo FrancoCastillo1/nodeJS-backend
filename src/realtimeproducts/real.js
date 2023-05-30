@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 import ProductManager from "../DAO/file/ProductManager.js";
 
 const real = Router()
@@ -14,4 +14,4 @@ real.post("/",async(req,res)=>{
     if(!agregar) return res.status(403).send("Por favor llena los campos requeridos")
     return res.json({payload:agregar})
 })
-export default real
+export default real */

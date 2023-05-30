@@ -117,11 +117,12 @@ const inicailizePassport  = () =>{
             const user =  await User.findOne({googleId:profile._json.sub})
             if(user !== null || user) return done(null,user)
            const newUserInfo ={
-                googleId:profile._json.sub,
                 firts_name:profile._json.given_name,
                 last_name:profile._json.family_name,
+                googleId:profile._json.sub,
                 password:"",
             }
+            console.log("no pasa")
             const newUser = await User.create(newUserInfo)
             return done(null,newUser)
         }catch(err){

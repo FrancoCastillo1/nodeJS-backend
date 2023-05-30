@@ -1,25 +1,17 @@
-/* import productClass from "../DAO/factory.js"
-const addProducts = async(obj) =>{
-    const instance = new productClass()
-    let validate = true
-    const array = Object.values(obj)
-    array.length = 5
-    const validaciones = [5,13,1,1,4]
+import ProductManager from "../DAO/mongo/product.dao.js";
 
-    if(array.at(-1) == false) return false;
-
-    for(let i =0;i<array.length;i++){
-        if(typeof array[i] == "number"){
-            let string = array[i].toString()
-            array[i] = string
-        }
-        if(array[i].length < validaciones[i]){
-            validate = false
-            break
-        }
+export async function deleteDataNoClient(){
+    const instanceProduct = new ProductManager()
+    try{
+        const getTotalProduct = await instanceProduct.getProducts()
+        const deleted = getTotalProduct.map((item,i) =>{
+            delete item.cretor
+            delete item._v
+            return item
+        })
+        console.log(deleted)
+        return deleted
+    }catch(err){
+        throw new Error(err)
     }
-   if(validate) await instance.addProducts(obj)
-   return validate
 }
-
-export default addProducts */

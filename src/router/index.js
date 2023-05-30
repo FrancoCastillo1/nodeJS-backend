@@ -1,6 +1,6 @@
 import products from "../controller/controller.products.js"
 import cart from "../controller/controller.carts.js"
-import real from "../realtimeproducts/real.js"
+import realTime from "../controller/controller.real.js"
 import message from "../controller/controller.message.js"
 import viewsTemplates from "../viewsTemplate/views.template.js"
 import auth from "../controller/controller.auth.js"
@@ -21,7 +21,7 @@ const routes = (app) =>{
    app.use("/api/cart",cart)
    app.use("/api/users",users)
    app.use("/api/sessions",session)
-   app.use("/realtimeproducts",real)
+   app.use("/realtimeproducts",realTime)
    app.use("/messages",message)
    app.use("/admin",admin)
    app.use("/ticket",ticket)
