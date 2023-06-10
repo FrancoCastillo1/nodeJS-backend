@@ -11,7 +11,6 @@ class ProductManager{
                     ...item._doc
                 }
             })
-            console.log("thisa",map)
             return map
         }catch(err){
             throw new Error(err)
@@ -50,9 +49,9 @@ class ProductManager{
         }
     }
 
-    async addProducts({title,description,price,thumbails,stock,category,status}){
+    async addProducts({title,description,price,thumbails,stock,category,status,creator}){
         try{
-            const post = await Products.create({title,description,price,thumbails,stock,category,status})
+            const post = await Products.create({title,description,price,thumbails,stock,category,status,creator})
             return post
         }catch(error){
             throw new Error(error)

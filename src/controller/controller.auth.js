@@ -9,7 +9,7 @@ import {corroboratePassword} from "../service/auth.service.js"
 const auth = Router()
 const instanceUser = new UserClass()
 
-const createObjCooke = (req) =>{
+const createObjCooke = (req,res) =>{
     const newObj = {
         firts_name:req.user.firts_name,
         last_name:req.user.last_name,
@@ -24,7 +24,7 @@ auth.post("/login",passport.authenticate("login",{failureRedirect:"/faillogin"})
     req.logger.info("helo")
     if(!req.user) return res.status(400).json({message:"El correo y la contraseña no coiniden"})
 
-    createObjCooke(req)
+    createObjCooke(req,res)
     
     res.json({status:"success", payload:req.user})
 })

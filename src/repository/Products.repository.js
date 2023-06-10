@@ -23,7 +23,7 @@ class ProductsRepository{
         try{
             const id = mongoose.Types.ObjectId(pid)
             console.log(id)
-          return  await this.dao.getProductsId(id)
+            return  await this.dao.getProductsId(id)
         }catch(err){
             throw new Error(err)
         }
@@ -47,14 +47,17 @@ class ProductsRepository{
             const userMail = await this.user.getUser({email,})
             if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes crear productos si sos usuario",false,403]
 
-            obj.creator.id = userMail._id.toString()
+            obj.creator = {}
+            obj.creator.id = userMail._id
             obj.creator.owner = userMail.rol
-
+            console.log("ddas",obj)
             const productDto = new ProductDTO(obj)
+            console.log("pasa",productDto)
             const arrayValues = Object.values(productDto)
             const arrayKeys = Object.keys(productDto)
 
             if(arrayValues.at(-1) == false) return ["El estatus del producto no existe",false,403];
+            console.log("me cago en tdod")
 
             arrayValues.length = 5
             arrayKeys.length = 5
@@ -69,6 +72,7 @@ class ProductsRepository{
                 }
                 if(arrayValues[i].length < validaciones[i]){
                     validate && (validate = false)
+                    console.log("no paso")
                     arrayValidaciones.push({propiedad:arrayKeys[i],valor:arrayValues[i],longitudMinima:validaciones[i]})
                     CustomError.createError({
                         name:EnumNameError.INVALID_CREDENTIALS_PRODUCTS,
@@ -79,35 +83,38 @@ class ProductsRepository{
             }
 
             let propertiesNotTestString;
-             arrayValidaciones.forEach(item =>{
+            arrayValidaciones.length > 0 && arrayValidaciones.forEach(item =>{
                 propertiesNotTestString += `
                 La propiedad ${item.propiedad} cuyo valor ${item.valor} no cumple con los ${item.longitudMinima} caráteres minimos establecidos\n`
             })
 
             if(!validate) return [`Se debe cumplir con la longitud minima para continuar:${propertiesNotTestString}`,false,400]
-
+            console.log("llego xd",productDto)
             return  await this.dao.addProducts(productDto)
-        }catch(error){
-            throw new Error(e)
+
+        }
+        catch(error){
+            throw new Error(error)
         }
     }
     async updateProducts(pid,update,valueUpDate){
         try{
-           return  await this.dao.updateProducts(pid,update,valueUpDate)
+            return  await this.dao.updateProducts(pid,update,valueUpDate)
         }catch(e){
             throw new Error(e)
         }
     }
-   async deleteProductsById(pid,email){
-    const productId = await this.getProductsId(pid)
-    const userMail = await this.user.getUser({email,}) /*recuerda hacer un middleware de esto con upDate */
-
-    if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes eliminar productos si sos usuario",false,403]
-    if(!productId) return ["No existe el producto",false,404]
-
-    if(productId.creator.id.toString() !== userMail._id.toString() && userMail.rol !== "admin") return ["No podes eliminar productos que no son tuyos",false,403]
-
+    async deleteProductsById(pid,email){
     try{
+        const productId = await this.getProductsId(pid)
+        const userMail = await this.user.getUser({email,}) /*recuerda hacer un middleware de esto con upDate */
+        console.log(productId,userMail)
+        if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes eliminar productos si sos usuario",false,403]
+        if(!productId) return ["No existe el producto",false,404]
+        console.log(productId)
+        if(productId.creator.id.toString() !== userMail._id.toString() && userMail.rol !== "admin") return ["No podes eliminar productos que no son tuyos",false,403]
+        console.log("no pudo pasarlo")
+
         return await this.dao.deleteProductsId(pid)
     }catch(err){
         throw new Error(err)

@@ -67,8 +67,8 @@ export async function patchProducts(cid,id,cantidad){
         if(obj.quankity == cantidad) return ["No puedes añadir la misma cantidad",false,409]
         obj.quankity = cantidad
         cart.products.splice(filter,1,obj)
-        req.logger.info(cart)
         const upDateProduct = await instanceCart.replazeCart(cart._id,cart)
+        console.log("xdd",upDateProduct)
         return upDateProduct
     }catch(error){
         req.logger.error(error)

@@ -18,12 +18,10 @@ io.on('connection', socket =>{
         console.log(array)
         io.emit("nuevoMensaje",array)
     })
-    socket.on("actualizar",async(data) =>{
-        console.log("llegó", data)
+    socket.on("actualizar",async() =>{
         try{
             const productsTotal = await deleteDataNoClient()
             io.emit("cambiosEcomerse",productsTotal)
-            console.log("aaaa")
         }catch(err){
             io.emit("cambios-ecomerse",false)
         }

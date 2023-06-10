@@ -16,7 +16,7 @@ products.get("/",async(req,res)=>{
       const products = await productsService.getProduct(limit,sort,page,query)
       res.render("home.handlebars",{products,})
     }catch(err){
-      res.json({message:err})
+      res.json({error:true,message:err})
     }
 })
 products.get("/:id",async(req,res)=>{
@@ -27,33 +27,32 @@ products.get("/:id",async(req,res)=>{
        if(!producto) return  res.status(404).json({message:`no existe el id ${id} en la base de datos`})
        return res.json({producto,}) 
     }catch(err){
-        res.json({message:err})
+        res.json({error:true,message:err})
     }
 })
-products.post("/"/* ,passportCall("current"),authorizationJWT("admin") */,async(req,res) =>{
+products.post("/",async(req,res) =>{
   const {email} = req.user
   console.log(email)
   try{
     const agregar = await productsService.addProducts(req.body,email)
     agregar[1] == undefined &&(agregar[1] = true)
-    socket.emit('actualizar', true);
     if(!agregar[1]) return res.status(agregar[2]).json({message:agregar[0]})
-    return res.json({message:"Se agrego el producto correctamente"})
+    socket.emit('actualizar', true);
+    res.status(201).json({message:"Se agrego el producto correctamente",content:agregar})
   }catch(err){
-    res.json({message:err})
+    res.json({error:true,message:err})
   }
 })
-products.patch("/:id",authorizationJWT("admin"),async(req,res) =>{
+products.patch("/:id",async(req,res) =>{
     const {id} = req.params
     const {actualizar,info} = req.body
     try{
       const actualizarPro = await productsService.updateProducts({id,actualizar,info})
-      console.log(actualizarPro)
       socket.emit('actualizar', true);
       if(!actualizarPro) return res.status(404).json({message:"No se encontro la clave"})
       res.json({message:"El producto se actualizo correctamente"})
     }catch(err){
-        res.json({message:err})
+        res.json({error:true,message:err})
     }
 })
 products.delete("/:id",async(req,res) =>{
@@ -61,12 +60,12 @@ products.delete("/:id",async(req,res) =>{
   const {email} = req.user
   try{
     const deletePro = await productsService.deleteProductsById(id,email)
-    deletePro[1] == undefined &&(deletePro[1] = true)
-    socket.emit('actualizar', true);
+    deletePro[1] == undefined && (deletePro[1] = true)
     if(!deletePro[1]) return  res.status(deletePro[2]).json({message:deletePro[0]})
+    socket.emit('actualizar', true);
     res.json({message:`El producto ${id} se elimino satisfactoriamente`})
   }catch(err){
-      res.json({message:err})
+      res.json({error:true,message:err})
   }
 })
 export default products
