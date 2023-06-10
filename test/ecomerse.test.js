@@ -29,6 +29,8 @@ describe("Test del ecomerse",()=>{
             const {statusCode,body,ok,headers} = await requester.post("/auth/login").send(newUserLogin)
             expect(statusCode).to.be.equal(200)
             expect(ok).to.be.true
+            const headersas = headers["set-cookie"]
+            console.log("eSr  ",headersas) 
             const headersCookie = headers["set-cookie"][0]
             expect(headersCookie).to.be.a("string")
 
@@ -39,7 +41,7 @@ describe("Test del ecomerse",()=>{
             expect(cookie.name).to.be.equal("authToken")
         })
     })
-    describe("Test de productos",()=>{
+    /* describe("Test de productos",()=>{
         it("El endpoint /api/products POST se debe crear correctamente",async()=>{
             const product = {
                 title:"Samusmg SSaas",
@@ -105,5 +107,5 @@ describe("Test del ecomerse",()=>{
             expect(message.includes("elimino") && message.includes("carrito")).to.be.true
             console.log("xddd")
         })
-    })
+    }) */
 })

@@ -11,12 +11,15 @@ import errorHandler from "./middlewares/handler.error.js";
 import addLogger from "./middlewares/logger.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUIExpress from "swagger-ui-express";
+import multer from "multer";
 
 const {sessionStore} = config
 const app = express();
+const upload = multer()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(upload.fields([{ name: 'myFile', maxCount: 1 },{ name: 'site', maxCount: 1 }]));
 
 const swaggerOption = {
   definition:{

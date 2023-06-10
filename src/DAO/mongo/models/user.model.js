@@ -20,7 +20,17 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:"user"
     },
+    last_connection:String,
     password:String,
+    documents:[
+        {
+            name:String,
+            reference:{
+                type:String,
+                unique:true
+            }
+        }
+    ]
 })
 userSchema.pre("findOne",function () {this.populate("cart")})
 const User = mongoose.model(userCollection,userSchema)
