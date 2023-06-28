@@ -1,13 +1,22 @@
-const button = document.querySelector("button")
+const form = document.querySelector("form")
 
-button.addEventListener("click",async(e) =>{
+form.addEventListener("submit",async(e) =>{
     e.preventDefault()
-    alert("sesion eliminada")
-    const url = "/user/destroy"
-    const headers = {
+    const url = "/api/users/logout"
+    const headers ={
         "Content-Type": "application/json",
     }
-    const get = await fetch(url,{
-        headers,
-    })
+    const method = "DELETE"
+    try{
+        const get = await fetch(url,{
+            headers,
+            method,
+        })
+        console.log(get)
+        const res = await get.json()
+        console.log(res)
+    }catch(err){
+        console.log(err)
+        alert("No se pudo hacer logout")
+    }
 })

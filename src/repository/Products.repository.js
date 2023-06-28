@@ -50,9 +50,9 @@ class ProductsRepository{
             obj.creator = {}
             obj.creator.id = userMail._id
             obj.creator.owner = userMail.rol
-            console.log("ddas",obj)
+
             const productDto = new ProductDTO(obj)
-            console.log("pasa",productDto)
+            
             const arrayValues = Object.values(productDto)
             const arrayKeys = Object.keys(productDto)
 
@@ -104,17 +104,8 @@ class ProductsRepository{
             throw new Error(e)
         }
     }
-    async deleteProductsById(pid,email){
+    async deleteProductsById(pid){
     try{
-        const productId = await this.getProductsId(pid)
-        const userMail = await this.user.getUser({email,}) /*recuerda hacer un middleware de esto con upDate */
-        console.log(productId,userMail)
-        if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes eliminar productos si sos usuario",false,403]
-        if(!productId) return ["No existe el producto",false,404]
-        console.log(productId)
-        if(productId.creator.id.toString() !== userMail._id.toString() && userMail.rol !== "admin") return ["No podes eliminar productos que no son tuyos",false,403]
-        console.log("no pudo pasarlo")
-
         return await this.dao.deleteProductsId(pid)
     }catch(err){
         throw new Error(err)

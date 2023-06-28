@@ -66,9 +66,8 @@ const inicailizePassport  = () =>{
     {passReqToCallback:true,usernameField:"email"}, async (req,username,password,done) =>{
         try{
             const user = await User.findOne({email:username})
-            console.log(user)
             if(!user){ console.log("No existe el usuario"); return done(null,false)}
-            if(!isValidPassword(user,password)){console.log("wow");return done(null,false)}
+            if(!isValidPassword(user,password)) return done(null,false)
             return done(null,user)
         }catch(error){
            return done(error)

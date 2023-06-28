@@ -12,29 +12,24 @@ class ClassMessage{
             })
             return map
         }catch(error){
-            return [false,error]
+            throw new Error(error)
         }
     }
     async postMessages(user,message){
         try{
             const post = await Messages.create({user,message})
-            return true
+            return post
         }catch(error){
-            return [false,error]
+            throw new Error(error)
         }
     }
-   /*  async putMessage(position,upMessage){
-        try{
-           
-        }
-    } */
     async deleteMessage(id){
         try{
             const eliminar = await Messages.deleteOne({_id:id})
-            return true
+            return eliminar
 
         }catch(error){
-            return [false,error]
+            throw new Error(error)
         }
     }
 }

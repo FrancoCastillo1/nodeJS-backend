@@ -8,24 +8,14 @@ import authorizationJWT from "../middlewares/authorization.jwt.js";
 
 const cart = Router()
 
-const wordA = ["perro","gato","loro","animal"]
-
-cart.param("word",(req,res,next,word)=>{ // creamos esto cuando hay mucho parametro repetido, por esto este middleware
-    const searchword = wordA.find(wordI => wordI == word ) // esto simularía ser una base de datos
-    const regex = /^[a-zA-Z0-9]+$/
-    if(searchword && regex.test(searchword)) req.word = searchword
-    else req.word = null // evaluo si cumple con la expresión
-    next() // refactorizar o borrar luego
-})
-
 cart.get("/",passportCall("current"),authorizationJWT("admin"),async(req,res)=>{
     let {limit,page,sort,query} = req.query
 
     try{
         const get = await instanceCart.getCart(limit,sort,page,query)
-        return res.json({payload:get})
+        return res.status(200).json({payload:get})
     }catch(err){
-        res.json({message:err})
+        res.status(500).json({message:err,error:true})
     }
 })
 
@@ -34,7 +24,7 @@ cart.post("/",async(req,res) =>{
         const addToCart = await instanceCart.postCart()
         return res.status(201).json({message:`se creo el carrito correctamente, el id es ${addToCart._id}`,payload:addToCart._id})
     }catch(err){
-        res.status(500).json({error:err})
+        res.status(500).json({message:err,error:true})
     }
 
 })
@@ -47,7 +37,7 @@ cart.get("/:cid",seeIdCart,async(req,res) =>{
          if(!buscarCart) return  res.status(404).send("No se el id del carrito")
          return res.json({cart:buscarCart})
     }catch(err){
-        res.json({message:err})
+        res.status(500).json({message:err,error:true})
     }
 })
 cart.put("/:cid/products/:pid",seeIdCart,async(req,res) =>{
@@ -58,9 +48,9 @@ cart.put("/:cid/products/:pid",seeIdCart,async(req,res) =>{
         const newProduct = await putAndPostCart(cid,pid,quankity)
         newProduct[1] == undefined && (newProduct[1] = true)
         if(!newProduct[1]) return res.status(newProduct[2]).json({message:newProduct[0]})
-        return res.json({message:"Se añadio el producto al carrito"})
+        return res.status(200).json({message:"Se añadio el producto al carrito"})
     }catch(err){
-        res.status(500).json({message:err})
+        res.status(500).json({message:err,error:true})
     }
 })
 
@@ -74,7 +64,7 @@ cart.patch("/:cid/products/:pid",seeIdCart,async(req,res) =>{
         return res.status(200).json({message:"Se actualizo la cantidad del producto",payload:{id:cid,quankity,}})
 
     }catch(err){
-        res.status(500).json({message:err})
+        res.status(500).json({message:err,error:true})
     }
 })
 

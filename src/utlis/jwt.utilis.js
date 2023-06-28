@@ -33,4 +33,17 @@ const authTokenCookie = (req,res,next) => {
         next()
     })
 }
-export { generateToken,authToken,authTokenCookie}
+
+const createObjCooke = (user,res) =>{
+    const newObj = {
+        firts_name:user.firts_name,
+        last_name:user.last_name,
+        email:user.email ?? "",
+        googleId:user.googleId ?? "",
+        rol:user.rol
+    }
+    const token = generateToken(newObj)
+    res.cookie("authToken",token) 
+}
+
+export { generateToken,authToken,authTokenCookie,createObjCooke}

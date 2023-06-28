@@ -16,14 +16,15 @@ message.post("/",async(req,res)=>{
     req.logger.info(message)
     const mensaje = await mensajeManager.postMessages(user,message)
     if(!mensaje[0]) return res.send(mensaje[1])
-    return res.send(`${user}, tu mensaje se envio correctamente`)
+    return res.json({message:`${user}, tu mensaje se envio correctamente`})
 })
 
 message.delete("/:id",async(req,res)=>{
     const {id} = req.params
+    const {firts_name} = req.user
     const mensaje = await mensajeManager.deleteMessage(id)
     if(!mensaje[0]) return res.send(mensaje[1])
-    return res.send(`${user}, tu mensaje se actualizo correctamente`)
+    return res.json({message:`${firts_name}, tu mensaje se actualizo correctamente`})
 })
 
 export default message

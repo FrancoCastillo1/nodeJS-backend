@@ -1,6 +1,5 @@
 class ProductDTO{
     constructor(product){
-        console.log("parece",product)
         this.title = product.title,
         this.description = product.description,
         this.price = product.price,

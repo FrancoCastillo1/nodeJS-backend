@@ -11,16 +11,16 @@ describe("Test del ecomerse",()=>{
     const cookie = {}
     describe("Test de autenticación",()=>{
         const newUser = {
-            firts_name:"Deva23",
-            last_name:"Jsa2",
-            email:"developmaa2a2etd@gmail.com",
-            password:"1234aa5"
+            firts_name:"newUser40",
+            last_name:"Jsa22",
+            email:"eluser@gmail.com",
+            password:"1234aa6"
         }
-        /* it("Se debe registar al usuario en la db",async()=>{
+        it("Se debe registar al usuario en la db",async()=>{
             const {statusCode,ok} = await requester.post("/auth").send(newUser)
             expect(statusCode).to.be.equal(201)
             expect(ok).to.be.true
-        })  lo borro debido a que funciona*/
+        })  /* lo borro debido a que funciona */
         it("Se debe logear al usuario y devolver una cookie",async()=>{
             const newUserLogin = {
                 email:newUser.email,
@@ -30,7 +30,7 @@ describe("Test del ecomerse",()=>{
             expect(statusCode).to.be.equal(200)
             expect(ok).to.be.true
             const headersas = headers["set-cookie"]
-            console.log("eSr  ",headersas) 
+            console.log(headersas)
             const headersCookie = headers["set-cookie"][0]
             expect(headersCookie).to.be.a("string")
 
@@ -41,12 +41,12 @@ describe("Test del ecomerse",()=>{
             expect(cookie.name).to.be.equal("authToken")
         })
     })
-    /* describe("Test de productos",()=>{
+   /*  describe("Test de productos",()=>{
         it("El endpoint /api/products POST se debe crear correctamente",async()=>{
             const product = {
-                title:"Samusmg SSaas",
-                price:62,
-                stock:23,
+                title:"Samusmg SSaae3s",
+                price:623,
+                stock:232,
                 category:"celulares",
                 description:"celu samnsumg",
             }
@@ -57,14 +57,14 @@ describe("Test del ecomerse",()=>{
             expect(statusCode).to.be.equal(201)
             expect(content).to.be.an('object')
             expect(content).to.have.property("_id").and.satisfy(id => id.length > 13)
-        })
-        it("El endpoint /api/products/{:id} DELETE debe eliminar el producto",async()=>{
+        }) */
+       /*  it("El endpoint /api/products/{:id} DELETE debe eliminar el producto",async()=>{
             const {statusCode,body} = await requester.delete("/api/products/647ce5be70c01ef93af732a0").set("Cookie",[`${cookie.total_cookie}`])
             console.log(body)
             expect(statusCode).to.be.equal(200)
-        })  
-    })
-    describe("Test del carrito",async()=>{
+        })  */ 
+  /*   }) */
+    /* describe("Test del carrito",async()=>{
         beforeEach(function(){
             this.timeout(9000)
         })

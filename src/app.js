@@ -9,8 +9,6 @@ const http = app.listen(port,()=> console.log(`server running on port ${port}`))
 let array = []
 const io = new Server(http)
 
-
-
 io.on('connection', socket =>{
     console.log("Nuevo cliente conectado")
     socket.on("message",data =>{

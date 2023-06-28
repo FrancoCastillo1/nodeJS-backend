@@ -16,7 +16,7 @@ import passportCall from "../utlis/passportCallback.js"
 const routes = (app) =>{
    app.use("/",viewsTemplates)
    app.use("/auth",auth)
-   app.use(passportCall("current")),
+   app.use(passportCall("current"))
    app.use("/api/products", products)
    app.use("/api/cart",cart)
    app.use("/api/users",users)

@@ -3,9 +3,8 @@ import Products from "./models/products.model.js"
 import logger from "../../logger/factory.js"
 
 class CartManager{
-    constructor(file){
-    this.file = `${process.cwd()}/src/${file}`
-   } 
+   constructor(){}
+   
    async getCart(limit = 10,sort = -1,page = 1,query){
         try{
             const cart = await Cart.paginate(query ?? {} ,{limit,sort:{date:sort},page})
@@ -34,19 +33,6 @@ class CartManager{
             throw new Error(error)
         } 
     }
-   /*  async putAndPostCart(cid,pid,quankity){
-        try{
-            const cart = await Cart.findOne({_id:cid})
-            const product = await Products.findOne({_id:pid})
-            if(!product || !cart) return false
-            cart.products.push({product:pid,quankity})
-            const result = await Cart.updateOne({_id:cid},cart)
-            return result
-        }catch(error){
-            console.log(error)
-            return false
-        }
-    } */
     async replazeCart(id,replaze){
         try{
             const cart = await Cart.updateOne({_id:id},replaze)
@@ -55,29 +41,9 @@ class CartManager{
             throw new Error(err)
         }
     }
-
-    /* async patchProducts(cid,id,cantidad){
-        try{
-            const put = await Cart.findOne(
-                {_id:cid},
-            )
-            const filter = put.products.findIndex((item) => item.product == id)
-            if(filter == -1) return false
-            const obj = put.products[filter]
-            obj.quankity = cantidad
-            put.products.splice(filter,1,obj)
-            const upDate = await Cart.updateOne({_id:cid},put)
-            return upDate
-        }catch(error){
-            console.log(error)
-            return false
-        }
-        
-    } */
     async deleteCart(cid){
         try{
             const upDate = await Cart.deleteOne({_id:cid})
-            console.log(upDate)
             return upDate
         }catch(error){
             logger.error(error)

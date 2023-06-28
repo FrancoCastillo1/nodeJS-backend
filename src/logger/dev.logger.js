@@ -4,9 +4,6 @@ import {pkg as files} from 'winston/lib/winston/transports/file.js' */
 /* import pkg from "winston/lib/winston/transports/index.js" */
 import customLevlesOptions from "../utlis/loggerCustomOptions.utils.js"
 
-/* const {Console,File} = pkg */
-/* const {File} = files */
-
 const loggerD = winston.createLogger({
     levels:customLevlesOptions.levels,
     transports:[

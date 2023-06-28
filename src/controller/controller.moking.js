@@ -5,7 +5,7 @@ const moking = Router()
 
 moking.get("/",(req,res) =>{
     const mockProducts = generateRandomProducts()
-    res.json({message:mockProducts})
+    res.status(200).json({message:mockProducts})
 })
 
 export default moking

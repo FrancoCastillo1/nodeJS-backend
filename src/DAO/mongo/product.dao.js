@@ -1,6 +1,5 @@
 import Products from "./models/products.model.js";
 import mongoose from "mongoose";
-import fs from "fs/promises"
 class ProductManager{
     
     async getProducts(){

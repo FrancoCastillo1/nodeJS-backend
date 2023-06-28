@@ -9,7 +9,7 @@ logger.get("/",(req,res) =>{
     req.logger.warning("falló");
     req.logger.error(6556, true)
     req.logger.fatal({user:"mate",lastName:"naran"})
-    res.json({message:"Probando los logs"})
+    res.status(200).json({message:"Probando los logs"})
 })
 
 export default logger

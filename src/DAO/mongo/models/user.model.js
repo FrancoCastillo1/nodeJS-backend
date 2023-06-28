@@ -20,7 +20,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:"user"
     },
-    last_connection:String,
+    last_connection:{
+        type:String,
+        default:"No auth"
+    },
     password:String,
     documents:[
         {

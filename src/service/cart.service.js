@@ -29,8 +29,10 @@ export async function putAndPostCart(cid,pid,quankity,email){
                 code:EnumError.INVALID_TYPES_ERROR,
             })
             return ["no existe el producto o el carrito",false,404]
-        } 
-        
+        }
+
+        if(!product.status) return ["El status del producto es falso",false,403]
+
         const verCantidad = cartId.products.find(item => item.quankity == quankity && item.id == idMongoString)
         if(verCantidad){
             logger.warning("Se repitió la cantidad")
@@ -68,7 +70,7 @@ export async function patchProducts(cid,id,cantidad){
         obj.quankity = cantidad
         cart.products.splice(filter,1,obj)
         const upDateProduct = await instanceCart.replazeCart(cart._id,cart)
-        console.log("xdd",upDateProduct)
+        
         return upDateProduct
     }catch(error){
         req.logger.error(error)

@@ -11,15 +11,15 @@ import errorHandler from "./middlewares/handler.error.js";
 import addLogger from "./middlewares/logger.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUIExpress from "swagger-ui-express";
-import multer from "multer";
+/* import multer from "multer"; */
 
 const {sessionStore} = config
 const app = express();
-const upload = multer()
+/* const upload = multer() */
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(upload.fields([{ name: 'myFile', maxCount: 1 },{ name: 'site', maxCount: 1 }]));
+/* app.use(upload.fields([{ name: 'myFile', maxCount: 1 },{ name: 'site', maxCount: 1 }])); */
 
 const swaggerOption = {
   definition:{
@@ -42,11 +42,6 @@ app.use(cookieParser())
 app.use(errorHandler)
 app.use(addLogger)
 app.use(session({
-  /* store: MongoStore.create({
-    mongoUrl: `mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`,
-    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-    ttl:60, 
-  }), */
   secret: sessionStore,
   resave: false,
   saveUninitialized: false
@@ -54,11 +49,7 @@ app.use(session({
 inicailizePassport()
 app.use(passport.initialize())
 app.use(passport.session())
-/* mongoose.set("strictQuery",false) 
-mongoose.connect(`mongodb+srv://${admin}:${password}@devanmongo.6a1rq04.mongodb.net/?retryWrites=true&w=majority`)
-.then(res => console.log("db is connected"))
-.catch(err => console.log(err) ) */
-/* conectMongo() */
+
 routes(app)
 
 export default app

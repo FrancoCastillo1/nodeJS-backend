@@ -1,31 +1,26 @@
 import { Router } from "express";
-/* import sessionExist from "../middlewares/sessionExist.js"
-import notSession from "../middlewares/notsession.js" */
-/* import  barril from "../middlewares/index.js" */
+import redirect from "../middlewares/redirect.js";
 
 const viewsTemplates = Router()
-
-/* const {sessionExist,notSession} = barril */
 
 viewsTemplates.get("/createnewpassword",(req,res)=>{
     res.render("restablecer.handlebars")
 })
 
-viewsTemplates.get("/restorepasswordrender",(req,res)=>{
+viewsTemplates.get("/restorepasswordrender",redirect("login","/api/products"),(req,res)=>{
     res.render("introducirCorreo.handlebars")
 })
 
-viewsTemplates.get("/"/* sessionExist, */,(req,res) =>{
+viewsTemplates.get("/",redirect("login","/api/products"),(req,res) =>{
     res.render("login.handlebars")
 })
 
-viewsTemplates.get("/register",(req,res)=>{
+viewsTemplates.get("/register",redirect("login","/api/products"),(req,res)=>{
     res.render("register.handlebars")
 })
 
-viewsTemplates.get("/logout"/* ,notSession */,(req,res)=>{
+viewsTemplates.get("/logout",(req,res)=>{
     res.render("logout.handlebars")
 })
-
 
 export default viewsTemplates
