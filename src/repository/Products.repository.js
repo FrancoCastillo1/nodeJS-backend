@@ -10,10 +10,19 @@ class ProductsRepository{
         this.dao = dao
         this.user = new UserClass()
     }
-    async getProduct(limit,sortP ,page,query){
+    async getProducts(limit,sortP ,page,query){
+      let products;
        try{
-        if (limit || sortP || page || typeof query == "object") return await this.dao.getProductByQuery(limit,sortP,page,query)
-        return await this.dao.getProducts()
+        if (limit || sortP || page || typeof query == "object"){
+            products = await this.dao.getProductByQuery(limit,sortP,page,query)
+        } 
+        else products=  await this.dao.getProducts()
+        const map = products.map(item=>{
+            return{
+                ...item._doc
+            }
+        })
+        return map
        }catch(err){
             throw new Error(err)
        }
@@ -72,7 +81,6 @@ class ProductsRepository{
                 }
                 if(arrayValues[i].length < validaciones[i]){
                     validate && (validate = false)
-                    console.log("no paso")
                     arrayValidaciones.push({propiedad:arrayKeys[i],valor:arrayValues[i],longitudMinima:validaciones[i]})
                     CustomError.createError({
                         name:EnumNameError.INVALID_CREDENTIALS_PRODUCTS,
@@ -89,7 +97,6 @@ class ProductsRepository{
             })
 
             if(!validate) return [`Se debe cumplir con la longitud minima para continuar:${propertiesNotTestString}`,false,400]
-            console.log("llego xd",productDto)
             return  await this.dao.addProducts(productDto)
 
         }

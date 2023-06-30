@@ -3,11 +3,10 @@ import { deleteFs } from "../utlis/deletefromfs.js";
 import __dirname from "../utlis/dirname.js";
 
 export async function conectionUser(email){
-    console.log("hola=")
     const instanceUser = new UserClass()
     try{
         const searchUser = await instanceUser.getUser({email,})
-        if(!searchUser.last_connection){
+        if(searchUser.last_connection === "none" || searchUser.last_connection === "No auth"){
             const data = new Date()
             const dateLastConnection = `${data.getDay()}/${data.getMonth() + 1}/${data.getFullYear()}`
             await instanceUser.patchUser(searchUser._id,{last_connection:dateLastConnection})
@@ -21,7 +20,6 @@ export async function conectionUser(email){
 }
 
 export async function createDocument(email,site,name,path){
-    console.log("hola?",email)
     const instanceUser = new UserClass()
     try{
         const searchUser = await instanceUser.getUser({email,})

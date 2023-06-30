@@ -4,19 +4,27 @@ import logger from "../../logger/factory.js"
 
 class CartManager{
    constructor(){}
-   
-   async getCart(limit = 10,sort = -1,page = 1,query){
+   async getCart(object){
         try{
-            const cart = await Cart.paginate(query ?? {} ,{limit,sort:{date:sort},page})
+            console.log("este",object)
+            const cart = await Cart.findOne(object)
             return cart
-
         }catch(error){
+            console.log("aa",error)
            throw new Error(error)
         }
     }
-    async getCartById(cid){
+    async getCartsByQuery(limit,sort,page,query){
         try{
-            const cartId = await Cart.findOne({_id:cid})
+            const cart = await Cart.paginate(query ?? {}, {limit,sort:{date:sort},page})
+            return cart
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+    async getCartById(id){
+        try{
+            const cartId = await Cart.findById(id)
             return cartId
         }catch(error){
             logger.error(error)
@@ -24,10 +32,10 @@ class CartManager{
         }
     }
     async postCart(){
-        const cartPost =new Cart()
+        const newCart = new Cart()
         try{
-            await cartPost.save()
-            return cartPost
+            const saveCart = newCart.save()
+            return saveCart
         }catch(error){
             logger.error(error)
             throw new Error(error)

@@ -11,10 +11,10 @@ const products = Router()
 const socket = socketIo(`http://localhost:${port}`);
 
 
-products.get("/",async(req,res)=>{
+products.get("/",authorizationJWT("admin"),async(req,res)=>{
     const {sort,query,limit,page} = req.query
     try{
-      const products = await productsService.getProduct(limit,sort,page,query)
+      const products = await productsService.getProducts(limit,sort,page,query)
       res.render("home.handlebars",{products,})
     }catch(err){
       res.status(500).json({error:true,message:err})

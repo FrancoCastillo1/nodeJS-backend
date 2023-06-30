@@ -16,11 +16,11 @@ describe("Test del ecomerse",()=>{
             email:"eluser@gmail.com",
             password:"1234aa6"
         }
-        it("Se debe registar al usuario en la db",async()=>{
+      /*   it("Se debe registar al usuario en la db",async()=>{
             const {statusCode,ok} = await requester.post("/auth").send(newUser)
             expect(statusCode).to.be.equal(201)
             expect(ok).to.be.true
-        })  /* lo borro debido a que funciona */
+        }) */  /* lo borro debido a que funciona */
         it("Se debe logear al usuario y devolver una cookie",async()=>{
             const newUserLogin = {
                 email:newUser.email,

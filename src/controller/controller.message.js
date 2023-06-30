@@ -1,5 +1,4 @@
 import { Router } from "express";
-import mongoose from "mongoose";
 import mensajeManager from "../DAO/mongo/messages.dao.js";
 
 const message = Router()

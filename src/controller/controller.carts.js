@@ -1,8 +1,6 @@
 import { Router } from "express";
-import __dirname from "../utilis.js";
-import instanceCart from "../DAO/mongo/cart.dao.js";
-import {putAndPostCart,patchProducts} from "../service/cart.service.js"
-import {seeIdCart} from "../middlewares/cart.middleware.js" 
+import {postProduct,patchProducts,generateNewCart,corroborateQuery,getCartById,deleteCart,deleteProductCart} from "../service/cart.service.js"
+import {seeIdCart, validateCid} from "../middlewares/cart.middleware.js" 
 import passportCall from "../utlis/passportCallback.js";
 import authorizationJWT from "../middlewares/authorization.jwt.js";
 
@@ -12,7 +10,8 @@ cart.get("/",passportCall("current"),authorizationJWT("admin"),async(req,res)=>{
     let {limit,page,sort,query} = req.query
 
     try{
-        const get = await instanceCart.getCart(limit,sort,page,query)
+        const get = await corroborateQuery(limit,page,sort,query)
+        
         return res.status(200).json({payload:get})
     }catch(err){
         res.status(500).json({message:err,error:true})
@@ -20,32 +19,32 @@ cart.get("/",passportCall("current"),authorizationJWT("admin"),async(req,res)=>{
 })
 
 cart.post("/",async(req,res) =>{
+    const {email} = req.user
     try{
-        const addToCart = await instanceCart.postCart()
-        return res.status(201).json({message:`se creo el carrito correctamente, el id es ${addToCart._id}`,payload:addToCart._id})
+        const addToCart = await generateNewCart(email)
+        return res.status(201).json({message:`se creo el carrito correctamente, el id es ${addToCart}`,payload:addToCart})
     }catch(err){
         res.status(500).json({message:err,error:true})
     }
 
 })
 
-cart.get("/:cid",seeIdCart,async(req,res) =>{
+cart.get("/:cid",validateCid,seeIdCart,async(req,res) =>{
     const {cid} = req.params
-
     try{
-        const buscarCart = await instanceCart.getCartById(cid)
+        const buscarCart = await getCartById(cid)
          if(!buscarCart) return  res.status(404).send("No se el id del carrito")
-         return res.json({cart:buscarCart})
+         return res.status(200).json({cart:buscarCart})
     }catch(err){
         res.status(500).json({message:err,error:true})
     }
 })
-cart.put("/:cid/products/:pid",seeIdCart,async(req,res) =>{
+cart.post("/:cid/products/:pid",validateCid,seeIdCart,async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
 
     try{
-        const newProduct = await putAndPostCart(cid,pid,quankity)
+        const newProduct = await postProduct(cid,pid,quankity)
         newProduct[1] == undefined && (newProduct[1] = true)
         if(!newProduct[1]) return res.status(newProduct[2]).json({message:newProduct[0]})
         return res.status(200).json({message:"Se añadio el producto al carrito"})
@@ -54,12 +53,14 @@ cart.put("/:cid/products/:pid",seeIdCart,async(req,res) =>{
     }
 })
 
-cart.patch("/:cid/products/:pid",seeIdCart,async(req,res) =>{
+cart.patch("/:cid/products/:pid",validateCid,seeIdCart,async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
     try{
         const newProduct = await patchProducts(cid,pid,quankity)
+
         newProduct[1] == undefined &&(newProduct[1] = true)
+
         if(!newProduct[1]) return res.status(newProduct[2]).json({message:newProduct[0]})
         return res.status(200).json({message:"Se actualizo la cantidad del producto",payload:{id:cid,quankity,}})
 
@@ -68,11 +69,11 @@ cart.patch("/:cid/products/:pid",seeIdCart,async(req,res) =>{
     }
 })
 
-cart.delete("/:cid/products/:pid",seeIdCart,async(req,res)=>{
+cart.delete("/:cid/products/:pid",validateCid,seeIdCart,async(req,res)=>{
     const {cid,pid} = req.params
     try{
-        const deleteP = await instanceCart.deleteProduct(cid,pid)
-        console.log("llego???")
+        const deleteP = await deleteProductCart(cid,pid)
+
         if(!deleteP) return res.status(404).send("Hubo un error en id del carrito o del producto")
         return res.status(200).json({message:"se elimino el producto correctamente"})
     }catch(err){
@@ -80,11 +81,11 @@ cart.delete("/:cid/products/:pid",seeIdCart,async(req,res)=>{
     }
 })
 
-cart.delete("/:cid",seeIdCart,async(req,res)=>{
+cart.delete("/:cid",validateCid,seeIdCart,async(req,res)=>{
     const {cid} = req.params
-
     try{
-        const deleteC = await instanceCart.deleteCart(cid)
+        const deleteC = await deleteCart(cid)
+
         if(!deleteC) return res.status(404).send("No existe el id del carrito")
         res.status(200).json({message:"se elimino el carrito"})
     }catch(err){

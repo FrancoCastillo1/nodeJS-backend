@@ -29,6 +29,29 @@ class UserClass{
             throw new Error(e)
         }
     }
+    async setNewProperty(id,property,value){
+        try{
+            const updatedUser = await User.updateOne(
+                { _id: id },
+                { $set: { [property]: value } }
+              );
+              return updatedUser
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+    async unsetPropery(id,property){
+        try{
+            const deleteProperty = await User.updateOne( 
+                {_id:id},
+                { $unset: { [property]: 1 }},
+            )
+            return deleteProperty
+        }catch(err){
+
+        }
+    }
+
     async pushArrayProperty(id,keyArray,obj){
         try{
             const updatedUser = await User.updateOne(

@@ -6,11 +6,15 @@ const ticket = Router()
 ticket.post("/",async(req,res) =>{
     const {cid} = req.body
     try{
-        const postTicket = await postTiket(cid)
-        req.logger("aca",postTicket)
-        res.status(201).json({message:postTicket})
+        const theTicket = await postTiket(cid)
+
+        theTicket[1] == undefined && (theTicket[1] = true)
+
+        if(!theTicket[1]) return res.status(theTicket[2]).json({message:theTicket[0]})
+        res.status(201).json({message:theTicket})
     }catch(err){
-        res.json({message:"Internal server error"})
+        console.log("este",err)
+        res.json({message:err,error:true})
     }
 })
 

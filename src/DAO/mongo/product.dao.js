@@ -1,16 +1,10 @@
 import Products from "./models/products.model.js";
 import mongoose from "mongoose";
 class ProductManager{
-    
     async getProducts(){
         try{
             const products = await Products.find()
-            const map = products.map(item=>{
-                return{
-                    ...item._doc
-                }
-            })
-            return map
+            return products
         }catch(err){
             throw new Error(err)
         }
@@ -19,12 +13,7 @@ class ProductManager{
     async getProductByQuery(limit,sortP ,page,query){
         try{
             const get = await Products.paginate(query ?? {}, {limit,page, sort: { date: sortP ?? -1 }, });
-            const map = get.docs.map((item) => {
-                return {
-                ...item._doc,
-                };
-             });
-            return map;
+            return get;
         }catch(error){
             throw new Error(error)
         }
@@ -32,7 +21,7 @@ class ProductManager{
 
     async getProductsId(id){
         try{
-            const getId = await Products.findById({_id:id})
+            const getId = await Products.findById(id)
             return getId
         }catch(error){
             throw new Error(error)
@@ -65,7 +54,6 @@ class ProductManager{
                 {$set:{[update]:valueUpDate}},
                 {new:true}
                 )
-            console.log("asd",put)
             return put
         }catch(e){
             throw new Error(e)

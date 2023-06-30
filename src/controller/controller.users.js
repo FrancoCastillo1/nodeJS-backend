@@ -25,8 +25,6 @@ users.patch("/premium/:uid",async(req,res)=>{
 users.post("/:uid/documents"/* ,imagesUser */,upload.single("myFile"),async(req,res)=>{
     const {email} = req.user
     const {name,site} = req.body
-    const {path} = req.file
-
     try{
         const newDoc = await createDocument(email,site,name,path)
         res.status(201).json({message:"Se guardo la imagen correctamente"})
@@ -39,17 +37,13 @@ users.post("/:uid/documents"/* ,imagesUser */,upload.single("myFile"),async(req,
 users.delete("/logout",async(req,res)=>{
     const {email} = req.user
     try{
-        console.log("peron")
-        console.log(req.cookies)
         const userConection =  await conectionUser(email)
-        console.log("es   ",req.cookies)
        /*  req.cookies = {} */
         res.cookie("authToken","",{expires:new Date(2000, 0, 1)})
         res.cookie("connect.sid","",{expires:new Date(2000, 0, 1)})
-        console.log("hola",userConection[1],userConection[0])
+
         res.status(userConection[1]).json({message:userConection[0]})
 
-        /* res.cookie("connect.sid","",{expires:new Date(2000, 0, 1)}) */
     }catch(err){
         res.status(500).json({message:err,error:true})
     }

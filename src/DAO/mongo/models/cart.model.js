@@ -2,11 +2,11 @@ import mongoose from "mongoose"
 import mongoosePaginate from "mongoose-paginate-v2"
 const cartColection = "cart"
 const cartSchema = new mongoose.Schema({
-    email:{
+   /*  email:{
         unique:true,
         index:true,
         type:String,
-    },
+    }, */
     products:[
         {
             product:{

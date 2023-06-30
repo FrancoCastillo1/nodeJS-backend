@@ -1,9 +1,8 @@
-import ProductManager from "../DAO/mongo/product.dao.js";
+import productsService from "../repository/product.index.js"
 
 export async function deleteDataNoClient(){
-    const instanceProduct = new ProductManager()
     try{
-        const getTotalProduct = await instanceProduct.getProducts()
+        const getTotalProduct = await productsService.getProducts()
         const deleted = getTotalProduct.map((item) =>{
             delete item.cretor
             delete item._v
