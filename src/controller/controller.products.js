@@ -11,10 +11,13 @@ const products = Router()
 const socket = socketIo(`http://localhost:${port}`);
 
 
-products.get("/",authorizationJWT("admin"),async(req,res)=>{
+products.get("/",async(req,res)=>{
     const {sort,query,limit,page} = req.query
     try{
       const products = await productsService.getProducts(limit,sort,page,query)
+      console.log("este",products)
+      products[1] == undefined &&(products[1] = true)
+      if(!products[1]) return res.status(products[2]).json({message:products[0]})
       res.render("home.handlebars",{products,})
     }catch(err){
       res.status(500).json({error:true,message:err})
@@ -26,7 +29,7 @@ products.get("/:id",async(req,res)=>{
     try{
       const producto = await productsService.getProductsId(id)
        if(!producto) return  res.status(404).json({message:`no existe el id ${id} en la base de datos`})
-       return res.status(200).json({producto,}) 
+       return res.status(200).json({payload:producto}) 
     }catch(err){
         res.json({error:true,message:err})
     }

@@ -2,6 +2,7 @@ const form = document.querySelector("form")
 
 form.addEventListener("submit",async(e) =>{
     e.preventDefault()
+    if(!document.cookie) return alert("Ya hiciste un logout")
     const url = "/api/users/logout"
     const headers ={
         "Content-Type": "application/json",
@@ -12,9 +13,7 @@ form.addEventListener("submit",async(e) =>{
             headers,
             method,
         })
-        console.log(get)
         const res = await get.json()
-        console.log(res)
     }catch(err){
         console.log(err)
         alert("No se pudo hacer logout")

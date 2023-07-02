@@ -8,14 +8,14 @@ class ProductManager{
     async getProducts(){
       try{
           const leer = await fs.readFile(`${this.ruta}`,"utf-8") 
-          let pasarJson = JSON.parse(leer)
+          const pasarJson = JSON.parse(leer)
           return pasarJson
       }catch(e){
         return {message:e}
       }  
      }
     async addProducts({title,description,price,thumbnail= "Sin i",stock,category,status = true }){
-       const get =await this.getProducts()
+       const get = await this.getProducts()
        const estatus = Boolean(status)
        const stockTotal = Number(stock)
         const precio = Number(price)

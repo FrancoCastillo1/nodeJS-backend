@@ -1,5 +1,4 @@
 import { Router } from "express";
-import passportCall from "../utlis/passportCallback.js";
 
 const session = Router()
 

@@ -5,8 +5,9 @@ const ticket = Router()
 
 ticket.post("/",async(req,res) =>{
     const {cid} = req.body
+    const {email} = req.user
     try{
-        const theTicket = await postTiket(cid)
+        const theTicket = await postTiket(cid,email)
 
         theTicket[1] == undefined && (theTicket[1] = true)
 

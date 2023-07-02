@@ -4,19 +4,18 @@ import {generateToken,createObjCooke} from "../utlis/jwt.utilis.js"
 import {sendMailForNewPassword} from "../service/mail.service.js"
 import {corroboratePassword} from "../service/auth.service.js"
 import { conectionUser } from "../service/user.service.js";
-import passportCall from "../utlis/passportCallback.js";
 
 const auth = Router()
 
 auth.post("/login",passport.authenticate("login",{failureRedirect:"/faillogin"}),async(req,res)=>{
-   /*  const reqUserPassport = req.user */
     if(!req.user) return res.status(400).json({message:"El correo y la contraseña no coiniden"})
+
     createObjCooke(req.user,res)
-    /* req.user = reqUserPassport */
     try{
         const userConection = await conectionUser(req.user.email)
-
-        return res.status(userConection[1]).json({status:"success", payload:req.user,message:userConection[0]})
+        userConection[1] == undefined && (userConection = true)
+        if(!userConection[1]) return res.status(userConection[2]).json({message:userConection[0]})
+        return res.status(201).json({status:"success", payload:req.user,message:`El usuario se logeo corectamente`})
     }catch(err){
         res.status(500).json({message:err,error:true})
     }

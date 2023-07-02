@@ -1,29 +1,41 @@
 import { Router } from "express";
 import mensajeManager from "../DAO/mongo/messages.dao.js";
+import authorizationJWT from "../middlewares/authorization.jwt.js";
 
 const message = Router()
 
-message.get("/",async(req,res)=>{
-    const mensaje = await mensajeManager.getMessages()
-    req.logger.info(mensaje)
-    if(!mensaje[0]) return mensaje[1]
-     res.render("chat",{mensaje,})
+message.get("/",authorizationJWT("admin"),async(req,res)=>{
+    try{
+        const mensaje = await mensajeManager.getMessages()
+        if(!mensaje[0]) return mensaje[1]
+         res.render("chat",{mensaje,})
+    }catch(err){
+        res.status(500).json({message:err,error:true})
+    }
 })
 
-message.post("/",async(req,res)=>{
-    const {user, message } = req.body
-    req.logger.info(message)
-    const mensaje = await mensajeManager.postMessages(user,message)
-    if(!mensaje[0]) return res.send(mensaje[1])
-    return res.json({message:`${user}, tu mensaje se envio correctamente`})
+message.post("/",authorizationJWT("admin"),async(req,res)=>{
+    const {firts_name} = req.user
+    const { message } = req.body
+    try{
+        const mensaje = await mensajeManager.postMessages(firts_name,message)
+        if(!mensaje) return res.status(404).json({message:`No se pudo enviar correctamente el mensaje`})
+        return res.status(201).json({message:`${firts_name}, tu mensaje se envio correctamente`})
+    }catch(err){
+        res.status(500).json({message:err,error:true})
+    }
 })
 
-message.delete("/:id",async(req,res)=>{
+message.delete("/:id",authorizationJWT("admin"),async(req,res)=>{
     const {id} = req.params
     const {firts_name} = req.user
-    const mensaje = await mensajeManager.deleteMessage(id)
-    if(!mensaje[0]) return res.send(mensaje[1])
-    return res.json({message:`${firts_name}, tu mensaje se actualizo correctamente`})
+    try{
+        const mensaje = await mensajeManager.deleteMessage(id)
+        if(!mensaje) return res.status(404).json({message:"No se encontro el mensaje"})
+        return res.status(204).json({message:`${firts_name}, tu mensaje se actualizo correctamente`})
+    }catch(err){
+        res.status(500).json({message:err,error:true})
+    }
 })
 
 export default message

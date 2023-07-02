@@ -5,7 +5,7 @@ import message from "../controller/controller.message.js"
 import viewsTemplates from "../viewsTemplate/views.template.js"
 import auth from "../controller/controller.auth.js"
 import admin from "../controller/controller.admin.js"
-import session from "../controller/controller.session.js"
+/* import session from "../controller/controller.session.js" */
 import ticket from "../controller/controller.ticket.js"
 import moking from "../controller/controller.moking.js"
 import logger from "../controller/controller.logger.js"
@@ -20,7 +20,7 @@ const routes = (app) =>{
    app.use("/api/products", products)
    app.use("/api/cart",cart)
    app.use("/api/users",users)
-   app.use("/api/sessions",session)
+   /* app.use("/api/sessions",session) */
    app.use("/realtimeproducts",realTime)
    app.use("/messages",message)
    app.use("/admin",admin)

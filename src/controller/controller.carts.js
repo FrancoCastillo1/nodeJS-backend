@@ -11,7 +11,8 @@ cart.get("/",passportCall("current"),authorizationJWT("admin"),async(req,res)=>{
 
     try{
         const get = await corroborateQuery(limit,page,sort,query)
-        
+        get[1] == undefined && (get[1] = true)
+        if(!get[1]) return res.status(403).json({message:get[0]})
         return res.status(200).json({payload:get})
     }catch(err){
         res.status(500).json({message:err,error:true})
@@ -22,6 +23,8 @@ cart.post("/",async(req,res) =>{
     const {email} = req.user
     try{
         const addToCart = await generateNewCart(email)
+        addToCart[1] == undefined && (addToCart[1] = true)
+        if(!addToCart[1]) return res.status(addToCart[2]).json({message:addToCart[0]})
         return res.status(201).json({message:`se creo el carrito correctamente, el id es ${addToCart}`,payload:addToCart})
     }catch(err){
         res.status(500).json({message:err,error:true})
@@ -42,9 +45,9 @@ cart.get("/:cid",validateCid,seeIdCart,async(req,res) =>{
 cart.post("/:cid/products/:pid",validateCid,seeIdCart,async(req,res) =>{
     const {cid,pid} = req.params
     const {quankity} = req.body
-
+    const {email} = req.user
     try{
-        const newProduct = await postProduct(cid,pid,quankity)
+        const newProduct = await postProduct(cid,pid,quankity,email)
         newProduct[1] == undefined && (newProduct[1] = true)
         if(!newProduct[1]) return res.status(newProduct[2]).json({message:newProduct[0]})
         return res.status(200).json({message:"Se añadio el producto al carrito"})
@@ -71,10 +74,13 @@ cart.patch("/:cid/products/:pid",validateCid,seeIdCart,async(req,res) =>{
 
 cart.delete("/:cid/products/:pid",validateCid,seeIdCart,async(req,res)=>{
     const {cid,pid} = req.params
+    const {rol} = req.user
     try{
-        const deleteP = await deleteProductCart(cid,pid)
+        const deleteP = await deleteProductCart(cid,pid,rol)
 
-        if(!deleteP) return res.status(404).send("Hubo un error en id del carrito o del producto")
+        deleteP[1] == undefined && (deleteP[1] = true)
+
+        if(!deleteP[1]) return res.status(deleteP[2]).json({message:deleteP[0]})
         return res.status(200).json({message:"se elimino el producto correctamente"})
     }catch(err){
         res.status(500).json({message:err,error:true})
@@ -83,10 +89,11 @@ cart.delete("/:cid/products/:pid",validateCid,seeIdCart,async(req,res)=>{
 
 cart.delete("/:cid",validateCid,seeIdCart,async(req,res)=>{
     const {cid} = req.params
+    const {rol} = req.user
     try{
-        const deleteC = await deleteCart(cid)
+        const deleteC = await deleteCart(cid,rol)
 
-        if(!deleteC) return res.status(404).send("No existe el id del carrito")
+        if(!deleteC) return res.status(404).json({message:"No existe el id del carrito"})
         res.status(200).json({message:"se elimino el carrito"})
     }catch(err){
         res.status(500).json({message:err,error:true})

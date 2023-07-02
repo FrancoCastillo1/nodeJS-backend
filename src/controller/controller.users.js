@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {patchRolUsers}  from "../service/user.service.js"
 import upload from "../utlis/multer.js";
-import { createDocument,conectionUser } from "../service/user.service.js";
+import { createDocument,logoutUser } from "../service/user.service.js";
 import imagesUser from "../middlewares/imagesUser.js";
 
 const users = Router()
@@ -37,12 +37,13 @@ users.post("/:uid/documents"/* ,imagesUser */,upload.single("myFile"),async(req,
 users.delete("/logout",async(req,res)=>{
     const {email} = req.user
     try{
-        const userConection =  await conectionUser(email)
+        const userConection =  await logoutUser(email)
        /*  req.cookies = {} */
+        userConection[1] == undefined && (userConection = true)
         res.cookie("authToken","",{expires:new Date(2000, 0, 1)})
         res.cookie("connect.sid","",{expires:new Date(2000, 0, 1)})
-
-        res.status(userConection[1]).json({message:userConection[0]})
+        if(!userConection[1]) return res.status(userConection[2]).json({message:userConection[0]})
+        res.status(204).json({message:`El usuario se deslogueo correctamente`})
 
     }catch(err){
         res.status(500).json({message:err,error:true})

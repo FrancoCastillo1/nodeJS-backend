@@ -81,7 +81,7 @@ const inicailizePassport  = () =>{
     callbackURL : "http://localhost:8080/auth/githubcallback"
   },async(accessToken,refreshToke,profile,done)=>{
         try{
-            console.log(profile)
+            console.log("este",profile)
             const user = await User.findOne({email:profile._json.email})
 
             if(user) return done(null,user)
@@ -89,7 +89,6 @@ const inicailizePassport  = () =>{
             const newUserInfo = {
                 firts_name:profile._json.login,
                 last_name:"",
-                age:18,
                 email:profile._json.email,
                 password:""
             }
@@ -112,17 +111,18 @@ const inicailizePassport  = () =>{
      },
      async(accessToken,refreshToken,profile,done) =>{
         try{
-            console.log(profile._json.sub)
             const user =  await User.findOne({googleId:profile._json.sub})
-            if(user !== null || user) return done(null,user)
+            if(user) return done(null,user)
            const newUserInfo ={
                 firts_name:profile._json.given_name,
                 last_name:profile._json.family_name,
+                email:"", //cambairlo por identifier_user
                 googleId:profile._json.sub,
                 password:"",
             }
-            console.log("no pasa")
+            console.log(newUserInfo)
             const newUser = await User.create(newUserInfo)
+            console.log("se creo?")
             return done(null,newUser)
         }catch(err){
           if(err.code == 11000)return  done(false)

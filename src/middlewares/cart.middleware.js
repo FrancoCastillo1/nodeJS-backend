@@ -14,9 +14,10 @@ export async function seeIdCart(req,res,next){
     const {cid} = req.params
     try{
         const user = await userInstance.getUser({email,})
+        console.log(user)
         const cart = await instanceCart.getCartById(cid)
         if(!cart) return res.status(404).json({message:"El carriro no existe"})
-        const cartUser = user.cart._id.toString()
+        const cartUser = user?.cart?._id.toString()
         const cartId = cart._id.toString()
 
         if(cartUser !== cartId && user.rol != "admin") return res.status(403).json({message:"No podés acceder a carritos de otras personas"})

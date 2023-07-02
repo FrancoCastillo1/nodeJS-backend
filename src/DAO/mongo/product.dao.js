@@ -1,6 +1,15 @@
 import Products from "./models/products.model.js";
 import mongoose from "mongoose";
 class ProductManager{
+    async getProductsCount(){
+        try{
+            const count = Products.find({}).countDocuments()
+            return count
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+
     async getProducts(){
         try{
             const products = await Products.find()
@@ -12,7 +21,8 @@ class ProductManager{
 
     async getProductByQuery(limit,sortP ,page,query){
         try{
-            const get = await Products.paginate(query ?? {}, {limit,page, sort: { date: sortP ?? -1 }, });
+            const get = await Products.paginate(query ?? {}, {limit,page, sort: { date: sortP }, });
+            console.log("aca",get)
             return get;
         }catch(error){
             throw new Error(error)

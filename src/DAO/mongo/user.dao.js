@@ -25,7 +25,7 @@ class UserClass{
             const user = await User.create(obj)
             return user
         }catch(err){
-           if(e.code == 1100) return;
+            if(err.code == 11000) throw new Error(err.message)
             throw new Error(e)
         }
     }
@@ -48,7 +48,7 @@ class UserClass{
             )
             return deleteProperty
         }catch(err){
-
+            throw new Error(err)
         }
     }
 
@@ -63,6 +63,18 @@ class UserClass{
             throw new Error(err)
         }
     }
+    async pullArrayProperty(id,array,property,pid) {
+        try {
+            const resultado = await User.updateOne(
+                { _id: id },
+                { $pull: { [array]: { [property]: pid } } },
+                { new: true }
+            );
+            return resultado
+        } catch (error) {
+         throw new Error(error)
+        }
+      }
     async patchUser(id,objUpdate){
         try{
             const cambiarValor = await User.updateOne(

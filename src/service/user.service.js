@@ -2,18 +2,25 @@ import UserClass from "../DAO/mongo/user.dao.js";
 import { deleteFs } from "../utlis/deletefromfs.js";
 import __dirname from "../utlis/dirname.js";
 
+export async function logoutUser(email){
+    const instanceUser = new UserClass()
+    const searchUser = await instanceUser.getUser({email,})
+        if((searchUser.last_connection === "none")){
+            const data = new Date()
+            const dateLastConnection = `${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()}`
+           return await instanceUser.patchUser(searchUser._id,{last_connection:dateLastConnection})   
+        }
+    return ["El usuario ya hizo logout",false,403]
+}
+
 export async function conectionUser(email){
     const instanceUser = new UserClass()
     try{
         const searchUser = await instanceUser.getUser({email,})
-        if(searchUser.last_connection === "none" || searchUser.last_connection === "No auth"){
-            const data = new Date()
-            const dateLastConnection = `${data.getDay()}/${data.getMonth() + 1}/${data.getFullYear()}`
-            await instanceUser.patchUser(searchUser._id,{last_connection:dateLastConnection})
-            return ["Se elimino la sesión del usuario",204]
+        if(searchUser.last_connection !== "none" || searchUser.last_connection === "No auth"){
+            return await instanceUser.patchUser(searchUser._id,{last_connection:"none"})
         }
-        await instanceUser.patchUser(searchUser._id,{last_connection:"none"})
-        return ["El usuario se logeo correctamente",200]
+        return ["No puedes logearte 2 veces",false,200]
     }catch(err){
         throw new Error(err)
     }

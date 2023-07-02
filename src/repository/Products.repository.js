@@ -4,6 +4,7 @@ import { EnumError,EnumNameError } from "../utlis/error/enum.error.js"
 import {generateDocument} from "../utlis/error/info.error.js"
 import UserClass from "../DAO/mongo/user.dao.js"
 import mongoose from "mongoose"
+import { sendMailActionOfAdmnin } from "../service/mail.service.js"
 
 class ProductsRepository{
     constructor(dao){
@@ -11,20 +12,40 @@ class ProductsRepository{
         this.user = new UserClass()
     }
     async getProducts(limit,sortP ,page,query){
-      let products;
-       try{
+    let products;
+    try{
+        const productsCount = await this.dao.getProductsCount()
+        let numberPage = page? Number(page):" "
+        let numberLimit = limit?Number(limit):" "
+        let numberSort = sortP? Number(sortP):" "
+
+        if(!numberLimit || !numberPage || !numberSort) return ["Las querys limit,page,sort deben enviarse como numeros",false,403]   
+        
+        if(numberPage > productsCount || numberLimit > productsCount) return [`Las páginas o limites no pueden ser mayores a los productos  ${productsCount} existentes`,false,403]
+        if((typeof numberSort == "number") && (numberSort !== -1 && numberSort !== 1)) return ["La query sort solo acepta 1(ascendente) o -1(descendente)",false,403]
+    
+        numberLimit == " " && (numberLimit =10)
+        numberSort == " " && (numberSort = -1)
+        numberPage == " " && (numberPage = 1)
+        
         if (limit || sortP || page || typeof query == "object"){
-            products = await this.dao.getProductByQuery(limit,sortP,page,query)
-        } 
-        else products=  await this.dao.getProducts()
-        const map = products.map(item=>{
-            return{
-                ...item._doc
-            }
+            products = await this.dao.getProductByQuery(numberLimit,numberSort,numberPage,query)
+
+            const copy = [...products.docs]
+            if(products.totalDocs == 0) return [`No hay ningún documento con tu ${query}`,false,404]
+            products = copy
+        }
+        else   products=  await this.dao.getProducts()
+
+        const map = products.map(item =>{
+            delete item._v 
+            delete item.creator
+            return item._doc
         })
+
         return map
        }catch(err){
-            throw new Error(err)
+           throw new Error(err)
        }
     }
 
@@ -51,15 +72,14 @@ class ProductsRepository{
 
     async addProducts(obj,email){
         let validate = true
-        console.log("parece que la wea funciona")
         try{
             const userMail = await this.user.getUser({email,})
+            console.log("xd?",userMail)
             if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes crear productos si sos usuario",false,403]
 
             obj.creator = {}
             obj.creator.id = userMail._id
             obj.creator.owner = userMail.rol
-
             const productDto = new ProductDTO(obj)
             
             const arrayValues = Object.values(productDto)
@@ -97,23 +117,38 @@ class ProductsRepository{
             })
 
             if(!validate) return [`Se debe cumplir con la longitud minima para continuar:${propertiesNotTestString}`,false,400]
-            return  await this.dao.addProducts(productDto)
 
+            const product =  await this.dao.addProducts(productDto)
+            await this.user.pushArrayProperty(userMail._id,"products_created",{product:product._id})
+            return product
         }
         catch(error){
             throw new Error(error)
         }
     }
-    async updateProducts(pid,update,valueUpDate){
+    async updateProducts(pid,update,valueUpDate,rol){
         try{
-            return  await this.dao.updateProducts(pid,update,valueUpDate)
+            const upDate =   await this.dao.updateProducts(pid,update,valueUpDate)
+            if(rol == "admin"){
+                const user = await this.user.getUser({"products.product":pid})
+                const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha actualizado el producto con el id ${pid}.Los cambios fueron en la propiedad ${update} donde el nuevo valor es ${valueUpDate}.Comuniquese con nuestro soporte en caso de haber sido una confusión`
+                sendMailActionOfAdmnin(user.email,text)
+            }
+            return upDate
         }catch(e){
             throw new Error(e)
         }
     }
-    async deleteProductsById(pid){
-    try{
-        return await this.dao.deleteProductsId(pid)
+    async deleteProductsById(pid,rol){
+        try{
+            const deleteProduct =  await this.dao.deleteProductsId(pid)
+            if(rol == "admin"){
+                const user = await this.user.getUser({"products.product":pid})
+                await this.user.pullArrayProperty(user._id,"products_created","products",pid)
+                const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha borrado el producto con el id ${pid}.Comuniquese con nuestro soporte en caso de haber sido una confusión`
+                sendMailActionOfAdmnin(user.email,text)
+            }
+            return deleteProduct
     }catch(err){
         throw new Error(err)
     }

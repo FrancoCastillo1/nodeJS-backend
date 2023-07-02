@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
         index:true,
         type:String,
     },
+    products_created:[
+        {
+            product:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"products"
+            }
+        }
+    ],
     cart:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"cart",
@@ -35,7 +43,10 @@ const userSchema = new mongoose.Schema({
         }
     ]
 })
-userSchema.pre("findOne",function () {this.populate("cart")})
+userSchema.pre("findOne",function () {
+    this.populate("cart")
+    this.populate("products_created.product")
+})
 const User = mongoose.model(userCollection,userSchema)
 
 export default User

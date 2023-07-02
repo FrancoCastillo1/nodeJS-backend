@@ -8,6 +8,7 @@ class ProductDTO{
         this.creator = {}
         this.creator.id = product.creator.id
         this.creator.owner = product.creator.owner
+        this.public_creator = product.public_creator ?? "Vendedor Anónimo"
         this.thumbails = product.thumbails ?? "Sin i",
         this.status = product.status ?? true
     }

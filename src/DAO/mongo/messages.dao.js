@@ -4,7 +4,7 @@ class ClassMessage{
     async getMessages(){
         try{
             const get = await Messages.find()
-            const map = get.map(({user,message,_id})=>{
+            const map = get.map(({user,message})=>{
                 return {
                     user,
                     message,
@@ -27,7 +27,6 @@ class ClassMessage{
         try{
             const eliminar = await Messages.deleteOne({_id:id})
             return eliminar
-
         }catch(error){
             throw new Error(error)
         }

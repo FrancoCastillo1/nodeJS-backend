@@ -4,9 +4,16 @@ import logger from "../../logger/factory.js"
 
 class CartManager{
    constructor(){}
+   async getCartsCount(){
+    try{
+        const countCarts = Cart.find({}).countDocuments();
+        return countCarts
+    }catch(err){
+        throw new Error(err)
+    }
+   }
    async getCart(object){
         try{
-            console.log("este",object)
             const cart = await Cart.findOne(object)
             return cart
         }catch(error){

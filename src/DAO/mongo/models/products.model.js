@@ -12,6 +12,10 @@ const productsSchema = new mongoose.Schema({
         type:Number,
         index:true
     },
+    public_creator:{
+        type:String,
+        index:true
+    },
     stock:Number,
     category:String,
     thumbail:{
