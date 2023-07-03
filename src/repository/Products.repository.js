@@ -19,10 +19,11 @@ class ProductsRepository{
         let numberLimit = limit?Number(limit):" "
         let numberSort = sortP? Number(sortP):" "
 
-        if(!numberLimit || !numberPage || !numberSort) return ["Las querys limit,page,sort deben enviarse como numeros",false,403]   
-        
-        if(numberPage > productsCount || numberLimit > productsCount) return [`Las páginas o limites no pueden ser mayores a los productos  ${productsCount} existentes`,false,403]
-        if((typeof numberSort == "number") && (numberSort !== -1 && numberSort !== 1)) return ["La query sort solo acepta 1(ascendente) o -1(descendente)",false,403]
+        if(!numberLimit || !numberPage || !numberSort) return ["Las querys limit,page,sort deben enviarse como numeros mayores a 0 ",false,400]   
+
+        if(page <=0 || limit <=0) return ["No pueden haber limites o páginas menores a 0",false,400]
+        if(numberPage > productsCount || numberLimit > productsCount) return [`Las páginas o limites no pueden ser mayores a los productos  ${productsCount} existentes`,false,400]
+        if((typeof numberSort == "number") && (numberSort !== -1 && numberSort !== 1)) return ["La query sort solo acepta 1(ascendente) o -1(descendente)",false,400]
     
         numberLimit == " " && (numberLimit =10)
         numberSort == " " && (numberSort = -1)

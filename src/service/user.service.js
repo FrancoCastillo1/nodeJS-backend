@@ -23,7 +23,7 @@ export async function conectionUser(auth_ide){
     }
 }
 
-export async function createDocument(auth_ide,site,name,path){
+export async function createDocument(auth_ide,site,name){
     const instanceUser = new UserClass()
     try{
         const searchUser = await instanceUser.getUser({auth_ide,})

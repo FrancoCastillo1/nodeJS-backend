@@ -24,9 +24,9 @@ users.patch("/premium/:uid",async(req,res)=>{
 
 users.post("/:uid/documents"/* ,imagesUser */,upload.single("myFile"),async(req,res)=>{
     const {auth_ide} = req.user
-    const {name,site} = req.body
+    const {name,siteB} = req.body
     try{
-        const newDoc = await createDocument(auth_ide,site,name,path)
+        const newDoc = await createDocument(auth_ide,siteB,name)
         res.status(201).json({message:"Se guardo la imagen correctamente"})
     }catch(err){
         res.status(500).json({message:typeof err == "object"?"Internal Server Error":err,error:true})
