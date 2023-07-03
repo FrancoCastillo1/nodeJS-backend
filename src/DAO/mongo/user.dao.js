@@ -18,19 +18,17 @@ class UserClass{
             return get
         }catch(err){
             logger.error(err)
-            throw new Error(e)
+            throw new Error(err)
         }
     }
     async postUser(obj){
         try{
-            const {password} = obj
-            obj.password = createHash(password)
             const user = await User.create(obj)
             return user
         }catch(err){
             logger.error(err)
             if(err.code == 11000) throw new Error(err.message)
-            throw new Error(e)
+            throw new Error(err)
         }
     }
     async setNewProperty(id,property,value){
@@ -78,7 +76,7 @@ class UserClass{
             );
             return resultado
         } catch (error) {
-            logger.error(err)
+            logger.error(error)
          throw new Error(error)
         }
       }

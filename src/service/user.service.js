@@ -1,16 +1,19 @@
 import UserClass from "../DAO/mongo/user.dao.js";
 import __dirname from "../utlis/dirname.js";
 
-
 export async function logoutUser(auth_ide){
     const instanceUser = new UserClass()
-    const searchUser = await instanceUser.getUser({auth_ide,})
-        if((searchUser.last_connection === "none")){
-            const data = new Date()
-            const dateLastConnection = `${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()}`
-           return await instanceUser.patchUser(searchUser._id,{last_connection:dateLastConnection})   
-        }
-    return ["El usuario ya hizo logout",false,403]
+    try{
+        const searchUser = await instanceUser.getUser({auth_ide,})
+            if((searchUser.last_connection === "none")){
+                const data = new Date()
+                const dateLastConnection = `${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()}`
+               return await instanceUser.patchUser(searchUser._id,{last_connection:dateLastConnection})   
+            }
+        return ["El usuario ya hizo logout",false,403]
+    }catch(err){
+        throw new Error(err)
+    }
 }
 
 export async function conectionUser(auth_ide){

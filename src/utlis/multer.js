@@ -1,7 +1,5 @@
 import multer from "multer";
 import __dirname from "./dirname.js";
-/* import { directorio } from "../middlewares/imagesUser.js";
-console.log("es",directorio) */
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

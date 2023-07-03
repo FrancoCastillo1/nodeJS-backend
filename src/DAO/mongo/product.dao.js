@@ -8,7 +8,7 @@ class ProductManager{
             return count
         }catch(error){
             logger.error(error)
-            throw new Error(err)
+            throw new Error(error)
         }
     }
 
@@ -18,7 +18,7 @@ class ProductManager{
             return products
         }catch(error){
             logger.error(error)
-            throw new Error(err)
+            throw new Error(error)
         }
     }
 
@@ -48,7 +48,7 @@ class ProductManager{
             return getByKey
         }catch(error){
             logger.error(error)
-            throw new Error(err)
+            throw new Error(error)
         }
     }
 
@@ -73,7 +73,7 @@ class ProductManager{
             return put
         }catch(error){
             logger.error(error)
-            throw new Error(e)
+            throw new Error(error)
         }
     }
 
@@ -83,7 +83,7 @@ class ProductManager{
             return deleteProduct
         }catch(error){
             logger.error(error)
-            throw new Error(err)
+            throw new Error(error)
         }
     }
 }
