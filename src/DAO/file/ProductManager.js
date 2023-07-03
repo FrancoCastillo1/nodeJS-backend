@@ -41,7 +41,6 @@ class ProductManager{
         return buscar
     }
     async upDateProduct({id,actualizar,info}){
-        console.log(id,actualizar)
         const buscar = pasarJson.findIndex((item)=>item.id == id)
         if(buscar == -1 )return false;
         const objetoUp = pasarJson.at(buscar)

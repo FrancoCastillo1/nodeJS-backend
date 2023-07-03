@@ -5,7 +5,6 @@ const {secretJWT} = config
 
 const generateToken = (user) =>{
     const token = jwt.sign(user,secretJWT,{expiresIn:"1h"})
-    console.log(token)
     return token
 }
 
@@ -38,7 +37,7 @@ const createObjCooke = (user,res) =>{
     const newObj = {
         firts_name:user.firts_name,
         last_name:user.last_name,
-        email:user.email ?? "",
+        auth_ide:user.auth_ide ?? "",
         googleId:user.googleId ?? "",
         rol:user.rol
     }

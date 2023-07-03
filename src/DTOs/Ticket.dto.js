@@ -1,9 +1,9 @@
 class TikcetDTO{
-    constructor(code,date,total,email){
+    constructor(code,date,total,emailOrFirtsName){
         this.code = code
         this.purchase_datetime = date
         this.ammount = total
-        this.purchaser = email ?? "" //hago esto para cambiarlo luego
+        this.purchaser = emailOrFirtsName
     }
 }
 

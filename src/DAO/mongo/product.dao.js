@@ -1,3 +1,4 @@
+import logger from "../../logger/factory.js";
 import Products from "./models/products.model.js";
 import mongoose from "mongoose";
 class ProductManager{
@@ -5,7 +6,8 @@ class ProductManager{
         try{
             const count = Products.find({}).countDocuments()
             return count
-        }catch(err){
+        }catch(error){
+            logger.error(error)
             throw new Error(err)
         }
     }
@@ -14,7 +16,8 @@ class ProductManager{
         try{
             const products = await Products.find()
             return products
-        }catch(err){
+        }catch(error){
+            logger.error(error)
             throw new Error(err)
         }
     }
@@ -22,9 +25,9 @@ class ProductManager{
     async getProductByQuery(limit,sortP ,page,query){
         try{
             const get = await Products.paginate(query ?? {}, {limit,page, sort: { date: sortP }, });
-            console.log("aca",get)
             return get;
         }catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }
@@ -34,6 +37,7 @@ class ProductManager{
             const getId = await Products.findById(id)
             return getId
         }catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }
@@ -42,7 +46,8 @@ class ProductManager{
         try{
             const getByKey = await Products.findOne({[key]:value})
             return getByKey
-        }catch(err){
+        }catch(error){
+            logger.error(error)
             throw new Error(err)
         }
     }
@@ -52,6 +57,7 @@ class ProductManager{
             const post = await Products.create({title,description,price,thumbails,stock,category,status,creator})
             return post
         }catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }
@@ -65,7 +71,8 @@ class ProductManager{
                 {new:true}
                 )
             return put
-        }catch(e){
+        }catch(error){
+            logger.error(error)
             throw new Error(e)
         }
     }
@@ -74,7 +81,8 @@ class ProductManager{
         try{
             const deleteProduct = await Products.deleteOne({_id:pid})
             return deleteProduct
-        }catch(err){
+        }catch(error){
+            logger.error(error)
             throw new Error(err)
         }
     }

@@ -13,7 +13,6 @@ io.on('connection', socket =>{
     console.log("Nuevo cliente conectado")
     socket.on("message",data =>{
         array.push(data)
-        console.log(array)
         io.emit("nuevoMensaje",array)
     })
     socket.on("actualizar",async() =>{

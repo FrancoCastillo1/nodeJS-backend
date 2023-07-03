@@ -1,4 +1,5 @@
 import Messages from "./models/message.model.js";
+import logger from "../../logger/factory.js";
 
 class ClassMessage{
     async getMessages(){
@@ -12,6 +13,7 @@ class ClassMessage{
             })
             return map
         }catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }
@@ -20,6 +22,7 @@ class ClassMessage{
             const post = await Messages.create({user,message})
             return post
         }catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }
@@ -28,6 +31,7 @@ class ClassMessage{
             const eliminar = await Messages.deleteOne({_id:id})
             return eliminar
         }catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }

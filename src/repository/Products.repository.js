@@ -45,6 +45,7 @@ class ProductsRepository{
 
         return map
        }catch(err){
+        logger.error(err)
            throw new Error(err)
        }
     }
@@ -52,9 +53,9 @@ class ProductsRepository{
     async getProductsId(pid){
         try{
             const id = mongoose.Types.ObjectId(pid)
-            console.log(id)
             return  await this.dao.getProductsId(id)
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
@@ -66,27 +67,32 @@ class ProductsRepository{
         try{
             return await this.dao.getProductByKey(key,value)
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
 
-    async addProducts(obj,email){
+    async addProducts(obj,auth_ide){
         let validate = true
         try{
-            const userMail = await this.user.getUser({email,})
-            console.log("xd?",userMail)
-            if(userMail.rol != "premium" && userMail.rol != "admin") return ["no podes crear productos si sos usuario",false,403]
+            const userMail = await this.user.getUser({auth_ide,})
+            const productUser = userMail.products_created
+            const productUserRepeted = productUser.some(item => item.product.title == obj.title) 
+
+            if(productUserRepeted) return ["No puedes agregar el mismo producto",false,400]
+
+            if(userMail.rol != "premium") return [`no podes crear productos si sos ${userMail.rol == "user"?"usuario":"admin"}`,false,403]
 
             obj.creator = {}
             obj.creator.id = userMail._id
             obj.creator.owner = userMail.rol
+
             const productDto = new ProductDTO(obj)
             
             const arrayValues = Object.values(productDto)
             const arrayKeys = Object.keys(productDto)
 
             if(arrayValues.at(-1) == false) return ["El estatus del producto no existe",false,403];
-            console.log("me cago en tdod")
 
             arrayValues.length = 5
             arrayKeys.length = 5
@@ -123,33 +129,38 @@ class ProductsRepository{
             return product
         }
         catch(error){
+            logger.error(error)
             throw new Error(error)
         }
     }
     async updateProducts(pid,update,valueUpDate,rol){
+        const objId = mongoose.Types.ObjectId(pid);
         try{
-            const upDate =   await this.dao.updateProducts(pid,update,valueUpDate)
-            if(rol == "admin"){
-                const user = await this.user.getUser({"products.product":pid})
+            const upDate =   await this.dao.updateProducts(objId,update,valueUpDate)
+            const user = await this.user.getUser({"products.product":pid})
+            if(rol == "admin" && user.auth_ide.includes("@")){
                 const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha actualizado el producto con el id ${pid}.Los cambios fueron en la propiedad ${update} donde el nuevo valor es ${valueUpDate}.Comuniquese con nuestro soporte en caso de haber sido una confusión`
-                sendMailActionOfAdmnin(user.email,text)
+                sendMailActionOfAdmnin(user.auth_ide,text)
             }
             return upDate
         }catch(e){
+            logger.error(e)
             throw new Error(e)
         }
     }
     async deleteProductsById(pid,rol){
+        const objId = mongoose.Types.ObjectId(pid);
         try{
-            const deleteProduct =  await this.dao.deleteProductsId(pid)
-            if(rol == "admin"){
-                const user = await this.user.getUser({"products.product":pid})
-                await this.user.pullArrayProperty(user._id,"products_created","products",pid)
+            const deleteProduct =  await this.dao.deleteProductsId(objId)
+            const user = await this.user.getUser({"products_created.product":pid})
+            await this.user.pullArrayProperty(user._id,"products_created","products",pid)
+            if(rol == "admin" && user.auth_ide.includes("@")){
                 const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha borrado el producto con el id ${pid}.Comuniquese con nuestro soporte en caso de haber sido una confusión`
-                sendMailActionOfAdmnin(user.email,text)
+                sendMailActionOfAdmnin(user.auth_ide,text)
             }
             return deleteProduct
     }catch(err){
+        logger.error(err)
         throw new Error(err)
     }
    }

@@ -3,7 +3,6 @@ import passport from "passport"
 const passportCall = strategy =>{
     return async(req,res,next) =>{
         passport.authenticate(strategy,(err,user,info) =>{
-            console.log("peron peron que grande sos")
             if(err) return next(err)
             if(!user){
                 return res.status(401).json({error: info.messages ??  info.toString()})

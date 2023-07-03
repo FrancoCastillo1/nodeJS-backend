@@ -1,9 +1,7 @@
 const secProducts = document.querySelector(".sectionProducts")
 
 const socket = io()
-console.log(socket)
 socket.on("cambiosEcomerse",(data)=>{
-    console.log("ddsadsd",data)
     secProducts.innerHTML = ""
     data.forEach(element => {
         const divProduct = document.createElement("DIV")

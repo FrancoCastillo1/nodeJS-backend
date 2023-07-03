@@ -7,7 +7,6 @@ form.addEventListener("submit",async(e) =>{
     const obj = {}
 
     dataForm.forEach((value,name) => obj[name] = value)
-|   console.log("dd",obj)
     const url = "/auth/restorepassword"
     const method = "PATCH"
     const headers = {
@@ -18,7 +17,6 @@ form.addEventListener("submit",async(e) =>{
     try{
         const fetch = await fetchDataShared(url,headers,method,body)
         const json = await fetch.json()
-        console.log("xdd", json)
         return json
     }catch(err){
         return err

@@ -1,5 +1,6 @@
 import User from "./models/user.model.js";
 import { createHash } from "../../utlis/createpassword.js";
+import logger from "../../logger/factory.js";
 
 class UserClass{
     async getUserById(id){
@@ -7,6 +8,7 @@ class UserClass{
             const userId = await User.findById(id)
             return userId
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
@@ -15,6 +17,7 @@ class UserClass{
             const get = await User.findOne(obj)
             return get
         }catch(err){
+            logger.error(err)
             throw new Error(e)
         }
     }
@@ -25,6 +28,7 @@ class UserClass{
             const user = await User.create(obj)
             return user
         }catch(err){
+            logger.error(err)
             if(err.code == 11000) throw new Error(err.message)
             throw new Error(e)
         }
@@ -37,6 +41,7 @@ class UserClass{
               );
               return updatedUser
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
@@ -48,6 +53,7 @@ class UserClass{
             )
             return deleteProperty
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
@@ -60,6 +66,7 @@ class UserClass{
               );
               return updatedUser
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
@@ -67,11 +74,11 @@ class UserClass{
         try {
             const resultado = await User.updateOne(
                 { _id: id },
-                { $pull: { [array]: { [property]: pid } } },
-                { new: true }
+                { [array]:{ $pull:{ [property]: pid  }}}
             );
             return resultado
         } catch (error) {
+            logger.error(err)
          throw new Error(error)
         }
       }
@@ -82,6 +89,7 @@ class UserClass{
                {$set:objUpdate})
             return cambiarValor
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }

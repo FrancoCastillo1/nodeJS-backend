@@ -10,11 +10,10 @@ export async function validateCid(req,res,next){
 }
 
 export async function seeIdCart(req,res,next){
-    const {email} = req.user
+    const {auth_ide} = req.user
     const {cid} = req.params
     try{
-        const user = await userInstance.getUser({email,})
-        console.log(user)
+        const user = await userInstance.getUser({auth_ide,})
         const cart = await instanceCart.getCartById(cid)
         if(!cart) return res.status(404).json({message:"El carriro no existe"})
         const cartUser = user?.cart?._id.toString()

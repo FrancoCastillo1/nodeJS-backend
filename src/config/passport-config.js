@@ -27,14 +27,13 @@ const inicailizePassport  = () =>{
             try {
               const user = await User.findOne({ email: username });
               if (user) {
-                console.log("email exist")
                 return done(null, false);
               }
     
               const newUserInfo = {
                 firts_name,
                 last_name,
-                email,
+                auth_ide:email,
                 password: createHash(password),
               };
     
@@ -65,8 +64,8 @@ const inicailizePassport  = () =>{
   passport.use("login", new LocalStrategy(
     {passReqToCallback:true,usernameField:"email"}, async (req,username,password,done) =>{
         try{
-            const user = await User.findOne({email:username})
-            if(!user){ console.log("No existe el usuario"); return done(null,false)}
+            const user = await User.findOne({auth_ide:username})
+            if(!user) return done(null,false)
             if(!isValidPassword(user,password)) return done(null,false)
             return done(null,user)
         }catch(error){
@@ -81,15 +80,18 @@ const inicailizePassport  = () =>{
     callbackURL : "http://localhost:8080/auth/githubcallback"
   },async(accessToken,refreshToke,profile,done)=>{
         try{
-            console.log("este",profile)
-            const user = await User.findOne({email:profile._json.email})
+            const {login,id,node_id} = profile._json
 
+            const idString = id.toString()
+            const auth_ide = idString + node_id
+
+            const user = await User.findOne({auth_ide,})
             if(user) return done(null,user)
 
             const newUserInfo = {
-                firts_name:profile._json.login,
+                firts_name:login,
                 last_name:"",
-                email:profile._json.email,
+                auth_ide,
                 password:""
             }
             
@@ -111,21 +113,21 @@ const inicailizePassport  = () =>{
      },
      async(accessToken,refreshToken,profile,done) =>{
         try{
-            const user =  await User.findOne({googleId:profile._json.sub})
+          const {given_name,family_name,sub} = profile._json
+
+            const user =  await User.findOne({auth_ide:sub})
+
             if(user) return done(null,user)
            const newUserInfo ={
-                firts_name:profile._json.given_name,
-                last_name:profile._json.family_name,
-                email:"", //cambairlo por identifier_user
-                googleId:profile._json.sub,
+                firts_name:given_name,
+                last_name:family_name,
+                auth_ide:sub,
                 password:"",
             }
-            console.log(newUserInfo)
             const newUser = await User.create(newUserInfo)
-            console.log("se creo?")
             return done(null,newUser)
         }catch(err){
-          if(err.code == 11000)return  done(false)
+          if(err.code == 11000)return  done("Ya estás logueado en la aplicación")
             return done(err)
         }
      }   

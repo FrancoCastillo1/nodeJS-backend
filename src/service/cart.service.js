@@ -10,10 +10,10 @@ import { sendMailActionOfAdmnin } from "./mail.service.js"
 
 const instanceUser = new UserClass()
 
-export async function generateNewCart(email){
+export async function generateNewCart(auth_ide){
     const instanceUser =new UserClass()
     try{
-        const getUser = await instanceUser.getUser({email,})
+        const getUser = await instanceUser.getUser({auth_ide,})
         if(getUser.cart){
             const idCartString = getUser.cart._id.toString()
             return [`Ya tienes un carrito en tu cuenta ${getUser.firts_name}, cuyo id es ${idCartString}`,false,403]
@@ -62,14 +62,12 @@ export async function corroborateQuery(limit,sort,page,query){
     }
 }
 
-export async function postProduct(cid,pid,quankity,email){
+export async function postProduct(cid,pid,quankity,auth_ide){
     try{
-        const user = await instanceUser.getUser({email,})
+        const user = await instanceUser.getUser({auth_ide,})
         if(user.rol == "premium"){
             const productsUser = user.products_created
-            const filterProduct = productsUser.find(item => item.toString() == pid)
-            /* const products = await productsService.getProducts({[creadorId]:user._id.toString()})
-            const filterProduct = products.find(item => item._id.toString() == pid) */
+            const filterProduct = productsUser.some(item => item.product._id.toString() == pid)
             if(filterProduct) return ["No puedes añadir productos tuyos",false,403]
         }
         const cartId = await instanceCart.getCartById(cid)
@@ -87,8 +85,12 @@ export async function postProduct(cid,pid,quankity,email){
         }
 
         if(!product.status) return ["El status del producto es falso",false,403]
-        const verProductoRepetido = cartId.products.findIndex(item => item.product._id.toString() == pid)
+        const verProductoRepetido = cartId.products.find(item => item.product._id.toString() == pid)
+
         if(product.stock == 0) return ["No es posible añadir productos sin stock",false,403]
+
+        if(product.stock < quankity) return ["No se puede llevar más ejemplares de los que hay en stock",false,409]
+
         if(verProductoRepetido) return ["No podes añadir el mismo producto",false,403]
 
         const verCantidad = cartId.products.find(item => item.quankity == quankity && item.id == idMongoString)
@@ -101,8 +103,7 @@ export async function postProduct(cid,pid,quankity,email){
             })
             return ["No puedes añadir la misma cantidad",false,409]
         }
-        verProductoRepetido == -1 && cartId.products.push({product:pid,quankity})
-        logger.info("cantidad actualizada","sss")
+       cartId.products.push({product:pid,quankity})
         return  await instanceCart.replazeCart(cartId._id,cartId)
     }catch(error){
         logger.error(error)
@@ -113,7 +114,7 @@ export async function postProduct(cid,pid,quankity,email){
 export async function patchProducts(cid,id,cantidad,rol){
     try{
         const objIdCart =  mongoose.Types.ObjectId(cid)
-        const cart = await instanceCart.getCartById(cid)
+        const cart = await instanceCart.getCartById(objIdCart)
         const filter = cart.products.findIndex((item) => item.product._id == id)
         if(filter == -1 ||!cart){
             req.logger.warning("hubo un error en carrito o en producto")
@@ -129,14 +130,14 @@ export async function patchProducts(cid,id,cantidad,rol){
         obj.quankity = cantidad
         cart.products.splice(filter,1,obj)
         const upDateProduct = await instanceCart.replazeCart(cart._id,cart)
-        if(rol == "admin"){
-            const user = await instanceUser.getUser({cart:cid})
+        const user = await instanceUser.getUser({cart:cid})
+        if(rol == "admin" && user.auth_ide.includes("@")){
             const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha borrado el producto con el id ${pid} de su carrito.Comuniquese con nuestro soporte en caso de haber sido una confusión`
-            sendMailActionOfAdmnin(user.email,text)
+            sendMailActionOfAdmnin(user.auth_ide,text)
         }
         return upDateProduct
     }catch(error){
-        req.logger.error(error)
+        logger.error(error)
         throw new Error(error)
     }
     
@@ -155,31 +156,32 @@ export async function deleteProductCart(cid,pid,rol){
         if(!productExist) return ["El producto no existe",false,404]
 
         const deleteProduct = await instanceCart.deleteProduct(objectIdCart,objectIdProduct)
-        console.log(rol)
-        if(rol == "admin"){
-            const user = await instanceUser.getUser({cart:cid})
-            console.log(rol,user)
+
+        const user = await instanceUser.getUser({cart:cid})
+        if(rol == "admin" && user.auth_ide.includes("@")){
+            
             const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha borrado el producto con el id ${pid} de su carrito.Comuniquese con nuestro soporte en caso de haber sido una confusión`
-            sendMailActionOfAdmnin(user.email,text)
+            sendMailActionOfAdmnin(user.auth_ide,text)
         }
         return deleteProduct
     }catch(err){
+        logger.error(err)
         throw new Error(err)
     }
 }
 
-export async function deleteCart(cid,email,rol){
+export async function deleteCart(cid,rol){
     const objectIdCart = mongoose.Types.ObjectId(cid)
     try{
     const user = await instanceUser.getUser({cart:objectIdCart})
-    if(rol == "admin"){
+    if(rol == "admin" && user.auth_ide.includes("@")){
         const text = `Hola ${user.firts_name} ${user.last_name} le informamos que nuestro equipo le ha borrado el carrito.Comuniquese con nuestro soporte en caso de haber sido una confusión`
-        sendMailActionOfAdmnin(user.email,text)
+        sendMailActionOfAdmnin(user.auth_ide,text)
     }
         await instanceCart.deleteCart(objectIdCart)
         return await instanceUser.unsetPropery(user._id,"cart")
-
     }catch(err){
+        logger.error(err)
         throw new Error(err)
     }
 }

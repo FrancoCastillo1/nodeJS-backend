@@ -5,7 +5,6 @@ const register = document.querySelector(".register")
 
 async function newRender(form,fetch){
     const json = await fetch.json()
-    console.log(json)
     register.innerHTML = ""
     const divMail = document.createElement("DIV")
     divMail.innerHTML = `<div>
@@ -18,9 +17,7 @@ async function newRender(form,fetch){
     register.appendChild(divMail)
 }
 
-console.log("a",form)
 form.addEventListener("submit",async(e) =>{
-    console.log("zero")
 
     const dataForm = new FormData(form)
     const obj = {}

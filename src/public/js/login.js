@@ -1,7 +1,6 @@
 import fetchDataShared from "./shared/fetch.js"
 
 const form = document.querySelector(".formL")
-console.log(form)
 form.addEventListener("submit",async(e)=>{
     e.preventDefault()
     const data = new FormData(form)

@@ -1,10 +1,10 @@
 import UserClass from "../DAO/mongo/user.dao.js";
-import { deleteFs } from "../utlis/deletefromfs.js";
 import __dirname from "../utlis/dirname.js";
 
-export async function logoutUser(email){
+
+export async function logoutUser(auth_ide){
     const instanceUser = new UserClass()
-    const searchUser = await instanceUser.getUser({email,})
+    const searchUser = await instanceUser.getUser({auth_ide,})
         if((searchUser.last_connection === "none")){
             const data = new Date()
             const dateLastConnection = `${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()}`
@@ -13,23 +13,20 @@ export async function logoutUser(email){
     return ["El usuario ya hizo logout",false,403]
 }
 
-export async function conectionUser(email){
+export async function conectionUser(auth_ide){
     const instanceUser = new UserClass()
     try{
-        const searchUser = await instanceUser.getUser({email,})
-        if(searchUser.last_connection !== "none" || searchUser.last_connection === "No auth"){
-            return await instanceUser.patchUser(searchUser._id,{last_connection:"none"})
-        }
-        return ["No puedes logearte 2 veces",false,200]
+        const searchUser = await instanceUser.getUser({auth_ide,})
+         searchUser.last_connection !== "none"?await instanceUser.patchUser(searchUser._id,{last_connection:"none"}):" "
     }catch(err){
         throw new Error(err)
     }
 }
 
-export async function createDocument(email,site,name,path){
+export async function createDocument(auth_ide,site,name,path){
     const instanceUser = new UserClass()
     try{
-        const searchUser = await instanceUser.getUser({email,})
+        const searchUser = await instanceUser.getUser({auth_ide,})
         const reference = `${__dirname}/images/${site}`
         const objDoc = {
             name,
@@ -37,16 +34,15 @@ export async function createDocument(email,site,name,path){
         }
         return await instanceUser.pushArrayProperty(searchUser._id,"documents",objDoc)
     }catch(err){
-        await deleteFs(path)
         throw new Error(err)
     }    
 }
 
 
-export async function patchRolUsers(_id,cambioRol,email){
+export async function patchRolUsers(_id,cambioRol,auth_ide){
     const instanceUsers =  new UserClass()
     try{
-        const isAdmin = await instanceUsers.getUser({email,})
+        const isAdmin = await instanceUsers.getUser({auth_ide,})
 
         if(isAdmin.rol != "admin") return ["No puedes cambiar rol si no sos admin",false,403]
 
@@ -73,15 +69,15 @@ export async function patchRolUsers(_id,cambioRol,email){
         throw new Error(err)
     }
 }
-export async function corroboratePassword(emailUser,newPassword,repeteadPassword){
-    if(!newPassword || !repeteadPassword || !emailUser)return ["debes completar los 3 campos para continuar",false,400]
+export async function corroboratePassword(auth_ideUser,newPassword,repeteadPassword){
+    if(!newPassword || !repeteadPassword || !auth_ideUser)return ["debes completar los 3 campos para continuar",false,400]
     if(newPassword != repeteadPassword)return ["las contaseñas no coinciden",false,400]
 
     const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,}$/
     if(!regex.test(repeteadPassword)) return ["La contraseña debe tener al menos 10 carácteres, un digito y un simbolo especial",false,400]
 
     try{
-        const user = await instanceUser.getUser({email:emailUser})
+        const user = await instanceUser.getUser({auth_ide:auth_ideUser})
 
         const contraseñaAntigua = isValidPassword(user,repeteadPassword)
         if(contraseñaAntigua) return ["No podés cambiar tu contraseña a la actual que posees",false,409]
@@ -90,7 +86,6 @@ export async function corroboratePassword(emailUser,newPassword,repeteadPassword
         const idMongoUserString = user._id.toString()
         
         const userUpdate = await instanceUser.patchUser(idMongoUserString,{password:newPasswordUser})
-        console.log("que paso",userUpdate)
         return userUpdate
     }catch(err){
         throw new Error(err)

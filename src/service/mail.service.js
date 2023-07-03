@@ -7,11 +7,11 @@ const instanceUser = new UserClass()
 export async function sendMailForNewPassword(correoUsuario){
     const  {gmailUser} = config
     try{
-        const obtenerUsuario = await instanceUser.getUser({email:correoUsuario})
+        const obtenerUsuario = await instanceUser.getUser({auth_ide:correoUsuario})
 
          const result = await transport.sendMail({
             from:gmailUser,
-            to:obtenerUsuario.email,
+            to:obtenerUsuario.auth_ide,
             subject:"Restablecer contraseña",
             headers: {
                 'expiry-date': new Date(Date.now() * 60 * 60 * 1000).toUTCString()

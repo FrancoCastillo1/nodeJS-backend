@@ -5,11 +5,10 @@ console.log("es",directorio) */
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      const {site} = req.body
-      cb(null, `${__dirname}/images/${site}`)
+      const {siteB} = req.body
+      cb(null, `${__dirname}/images/${siteB}`)
     },
     filename: function (req, file, cb) {
-      console.log(file)
       cb(null, file.originalname) 
     }
     })

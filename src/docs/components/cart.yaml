@@ -5,7 +5,7 @@ components:
       properties:
         email: 
           type: string
-          description: Email del usuario asociado
+          description: Identificador de autenticación del usuario asociado
         products:
           type: array
           items:

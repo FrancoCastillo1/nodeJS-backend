@@ -50,8 +50,6 @@ class CustomerRouter{
         
         next()
     }
-
- /*    authjwt(){} ponerlo siempre encima de lor routers(en get/post) */
 }
 
 export default CustomerRouter

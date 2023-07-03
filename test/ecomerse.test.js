@@ -13,7 +13,7 @@ describe("Test del ecomerse",()=>{
         const newUser = {
             firts_name:"Usuario",
             last_name:"Malo",
-            email:"xddd@gmail.com",
+            auth_ide:"xddd@gmail.com",
             password:"1234aa6"
         }
       /*   it("Se debe registar al usuario en la db",async()=>{
@@ -23,7 +23,7 @@ describe("Test del ecomerse",()=>{
         })  */
         it("Se debe logear al usuario y devolver una cookie",async()=>{
             const newUserLogin = {
-                email:newUser.email,
+                auth_ide:newUser.auth_ide,
                 password:newUser.password,
             }
             const {statusCode,body,ok,headers} = await requester.post("/auth/login").send(newUserLogin)

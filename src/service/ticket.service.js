@@ -10,11 +10,11 @@ import mongoose from "mongoose";
 const instanceProducts = new ProductManager()
 const instanceTicket = new ClassTicket()
 
-const postTiket = async(cid,email) =>{
+const postTiket = async(cid,auth_ide) =>{
     const productosInexistentes = []
     const instanceUser = new UserClass()
     try{
-        const user = await instanceUser.getUser({email,})
+        const user = await instanceUser.getUser({auth_ide,})
         if(!user) return ["El usuario no existe",404,false]
         if(user.rol == "admin") return ["Los admin no pueden terminar el proceso de compra de otros usuarios",false,403]
         const objectIdCart = mongoose.Types.ObjectId(cid)
@@ -30,19 +30,22 @@ const postTiket = async(cid,email) =>{
                 productosInexistentes.push(productsCart[i].product._id)
                 continue;
             } 
+
             const upDateStock = product.stock - productsCart[i].quankity
-            await instanceProducts.updateProducts(product._id,"stock",upDateStock)
+            const validateStock = upDateStock < 0?0:upDateStock
+
+            await instanceProducts.updateProducts(product._id,"stock",validateStock)
         }
         
         for(let productoInexistente in productosInexistentes){
           productsCart.splice(productoInexistente,1)
         }
-        const code = uuidv4();
+        const emailOrFirtsName = auth_ide.includes("@")?auth_ide:user.firts_name
+        const code = uuidv4() + uuidv4();
         const data = new Date()
         const datosDeLaCompra = `Ticket efectudo el día: ${data.getDate()} del mes ${data.getMonth() + 1} del año ${data.getFullYear()}`
-        const totalCompra = productsCart.reduce((acumm,item) =>acumm + item.product.price,0)
-        const dtoTicket = new TikcetDTO(code,datosDeLaCompra,totalCompra,email)
-
+        const totalCompra = productsCart.reduce((acumm,item) =>acumm + (item.product.price * item.quankity),0)
+        const dtoTicket = new TikcetDTO(code,datosDeLaCompra,totalCompra,emailOrFirtsName)
         await instanceTicket.postTicket(dtoTicket)
         await instanceCart.deleteCart(cartId)
 

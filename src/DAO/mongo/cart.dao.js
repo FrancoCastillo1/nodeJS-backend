@@ -1,5 +1,4 @@
 import Cart from "./models/cart.model.js"
-import Products from "./models/products.model.js"
 import logger from "../../logger/factory.js"
 
 class CartManager{
@@ -9,6 +8,7 @@ class CartManager{
         const countCarts = Cart.find({}).countDocuments();
         return countCarts
     }catch(err){
+        logger.error(err)
         throw new Error(err)
     }
    }
@@ -17,7 +17,7 @@ class CartManager{
             const cart = await Cart.findOne(object)
             return cart
         }catch(error){
-            console.log("aa",error)
+            logger.error(error)
            throw new Error(error)
         }
     }
@@ -26,6 +26,7 @@ class CartManager{
             const cart = await Cart.paginate(query ?? {}, {limit,sort:{date:sort},page})
             return cart
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
@@ -53,6 +54,7 @@ class CartManager{
             const cart = await Cart.updateOne({_id:id},replaze)
             return cart
         }catch(err){
+            logger.error(err)
             throw new Error(err)
         }
     }
